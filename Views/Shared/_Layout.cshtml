@@ -1,0 +1,269 @@
+@inject IHttpContextAccessor HttpContextAccessor
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CỬA HÀNG SÁCH</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/animations.css" asp-append-version="true" /> @* Thêm file CSS cho animations *@
+    @RenderSection("Styles", required: false)
+</head>
+<script>
+    function capNhatSoLuongGioHang() {
+        fetch('/Cart/GetCartItemCount')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('cartItemCount').textContent = data.count;
+            });
+    }
+
+    // Gọi khi trang load
+    document.addEventListener("DOMContentLoaded", capNhatSoLuongGioHang);
+</script>
+
+<body>
+    <div class="background-overlay"></div> @* Thêm lớp phủ nền để tạo hiệu ứng loang màu *@
+    <header class="main-header shadow-lg animated-header">
+        @* Thêm shadow-lg và animated-header *@
+        <div class="container py-3">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <a href="/" class="d-flex align-items-center text-decoration-none logo-brand">
+                    <img src="~/images/Gemini_Generated_Image_yfymhcyfymhcyfym.png" alt="Logo StoreBooks" class="logo-img animated-logo" /> @* Logo local từ wwwroot/images *@
+                    <strong class="text-gradient fs-4 ms-2 animated-text-reveal">STOREBOOKS</strong> @* Thêm animated-text-reveal *@
+                </a>
+
+                <form method="get" asp-action="Index" asp-controller="Books" class="search-form flex-grow-1 mx-md-4">
+                    <div class="input-group animated-search-bar">
+                        @* Thêm animated-search-bar *@
+                        <input type="text" name="keyword" class="form-control search-input" placeholder="Tìm sách, tác giả, thể loại..." />
+                        <button type="submit" class="btn search-btn"><i class="fas fa-search"></i></button>
+                    </div>
+                </form>
+
+                <div class="d-flex align-items-center user-cart-actions">
+                    <a href="/Cart" class="text-dark me-3 cart-link animated-icon-bounce position-relative">
+                        <i class="fas fa-shopping-cart fa-lg"></i>
+                        <span class="cart-count badge bg-danger text-white position-absolute top-0 start-100 translate-middle rounded-pill"
+                              style="font-size: 0.75rem; padding: 4px 6px;" id="cartItemCount">0</span>
+                        <span class="d-none d-md-inline ms-1">Giỏ hàng</span>
+                    </a>
+
+
+                    @if (HttpContextAccessor.HttpContext.Session.GetString("TenDangNhap") != null)
+                    {
+                        <div class="dropdown">
+                            <a class="btn btn-outline-primary dropdown-toggle user-menu-toggle animated-button-hover" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                @* Thêm animated-button-hover *@
+                                <i class="fas fa-user-circle me-1"></i>
+                                <span class="d-none d-md-inline">@HttpContextAccessor.HttpContext.Session.GetString("TenDangNhap")</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 animated-dropdown">
+                                @* Thêm animated-dropdown *@
+                                <li><a class="dropdown-item animated-item-fade-in" href="/Account/ThongTin"><i class="fas fa-user me-2"></i> Thông tin tài khoản</a></li> @* Thêm animated-item-fade-in *@
+                                <li><a class="dropdown-item animated-item-fade-in" href="#" data-bs-toggle="modal" data-bs-target="#changePasswordModal"><i class="fas fa-key me-2"></i> Đổi mật khẩu</a></li>
+                                @if (HttpContextAccessor.HttpContext.Session.GetString("VaiTro") == "User")
+                                {
+                                    <li><hr class="dropdown-divider" /></li>
+                                    <li><a class="dropdown-item animated-item-fade-in" href="/Order/LichSu"><i class="fas fa-clock me-2"></i> Lịch sử mua hàng</a></li>
+                                    <li><a class="dropdown-item animated-item-fade-in" href="/YeuThich"><i class="fas fa-heart me-2"></i> Sách yêu thích</a></li>
+                                }
+                                <li><hr class="dropdown-divider" /></li>
+                                <li><a class="dropdown-item text-danger animated-item-fade-in" asp-controller="Account" asp-action="Logout"><i class="fas fa-sign-out-alt me-2"></i> Đăng xuất</a></li>
+                            </ul>
+                        </div>
+                    }
+                    else
+                    {
+                        <a class="btn btn-outline-primary me-2 auth-btn animated-button-hover" asp-controller="Account" asp-action="Login">Đăng nhập</a> @* Thêm animated-button-hover *@
+                        <a class="btn btn-primary auth-btn animated-button-hover" asp-controller="Account" asp-action="Register">Đăng ký</a>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <nav class="navbar navbar-expand-lg primary-navbar animated-navbar">
+            @* Thêm animated-navbar *@
+            <div class="container">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item"><a class="nav-link animated-nav-link" href="/">Trang chủ</a></li> @* Thêm animated-nav-link *@
+                        <li class="nav-item"><a class="nav-link animated-nav-link" href="/Books">Sách</a></li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle animated-nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Danh mục
+                            </a>
+                            <ul class="dropdown-menu shadow-lg border-0 animated-dropdown">
+                                @* Thêm animated-dropdown *@
+                                <li><a class="dropdown-item animated-item-fade-in" href="@Url.Action("Index", "Books")">Tất cả</a></li>
+                                @if (ViewBag.DanhMuc is List<STOREBOOKS.Models.DanhMuc> danhMucs)
+                                {
+                                    foreach (var dm in danhMucs)
+                                    {
+                                        <li>
+                                            <a class="dropdown-item animated-item-fade-in" href="@Url.Action("Index", "Books", new { maDanhMuc = dm.MaDanhMuc, keyword = HttpContextAccessor.HttpContext.Request.Query["keyword"] })">
+                                                @dm.TenDanhMuc
+                                            </a>
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                        </li>
+
+                        @if (HttpContextAccessor.HttpContext.Session.GetString("VaiTro") == "Admin")
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle animated-nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-cog me-1"></i> Quản trị
+                                </a>
+                                <ul class="dropdown-menu shadow-lg border-0 animated-dropdown">
+                                    <li>
+                                        <a class="dropdown-item animated-item-fade-in" href="/admin/thongke">
+                                            <i class="fas fa-chart-line me-2"></i> Thống kê doanh thu
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item animated-item-fade-in" href="/admin/danhmuc">
+                                            <i class="fas fa-list me-2"></i> Quản lý danh mục
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item animated-item-fade-in" href="/admin/order">
+                                            <i class="fas fa-shopping-bag me-2"></i> Quản lý đơn hàng
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item animated-item-fade-in" href="/Admin/AdminPayment">
+                                            <i class="fas fa-credit-card me-2"></i> Quản lý thanh toán
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item animated-item-fade-in" href="/admin/nguoidung">
+                                            <i class="fas fa-users me-2"></i> Quản lý người dùng
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item animated-item-fade-in" href="/admin/danhgia">
+                                            <i class="fas fa-star me-2"></i> Quản lý đánh giá
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item animated-item-fade-in" href="/admin/chat">
+                                            <i class="fas fa-comments me-2"></i> Quản lý Chat
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main role="main" class="container my-4 animated-main-content">
+        @* Thêm animated-main-content *@
+        @RenderBody()
+    </main>
+
+    <footer class="main-footer pt-5 pb-3 animated-footer">
+        @* Thêm animated-footer *@
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5 class="footer-heading animated-heading-reveal">CỬA HÀNG SÁCH</h5>
+                    <p class="footer-text animated-text-reveal">Khám phá thế giới tri thức với hàng ngàn cuốn sách từ mọi thể loại, được tuyển chọn kỹ lưỡng.</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5 class="footer-heading animated-heading-reveal">Liên kết nhanh</h5>
+                    <ul class="list-unstyled footer-links">
+                        <li><a href="/Books" class="footer-link animated-link-hover">Danh sách sách</a></li>
+                        <li><a href="/Cart" class="footer-link animated-link-hover">Giỏ hàng</a></li>
+                        @if (HttpContextAccessor.HttpContext.Session.GetString("VaiTro") == "Admin")
+                        {
+                            <li><a href="/admin/thongke" class="footer-link animated-link-hover">📊 Thống kê doanh thu</a></li>
+                            <li><a href="/admin/danhmuc" class="footer-link animated-link-hover">Quản lý danh mục</a></li>
+                            <li><a href="/admin/order" class="footer-link animated-link-hover">Quản lý đơn hàng</a></li>
+                            <li><a href="/Admin/AdminPayment" class="footer-link animated-link-hover">Quản lý thanh toán</a></li>
+                            <li><a href="/admin/nguoidung" class="footer-link animated-link-hover">Quản lý người dùng</a></li>
+                            <li><a href="/admin/danhgia" class="footer-link animated-link-hover">Quản lý đánh giá</a></li>
+                            <li><a href="/admin/chat" class="footer-link animated-link-hover">Quản lý Chat</a></li>
+                        }
+                        @if (HttpContextAccessor.HttpContext.Session.GetString("VaiTro") == "User")
+                        {
+                            <li><a class="footer-link animated-link-hover" asp-controller="Order" asp-action="LichSu">Lịch sử mua hàng</a></li>
+                            <li><a class="footer-link animated-link-hover" href="/YeuThich">Sách yêu thích</a></li>
+                        }
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5 class="footer-heading animated-heading-reveal">Liên hệ</h5>
+                    <p class="footer-contact animated-text-reveal"><i class="fas fa-envelope me-2"></i> support@storebooks.com</p>
+                    <p class="footer-contact animated-text-reveal"><i class="fas fa-phone me-2"></i> (+84) 123 456 789</p>
+                    <p class="footer-contact animated-text-reveal"><i class="fas fa-map-marker-alt me-2"></i> 123 Đường Tri Thức, Quận Bình Thạnh, TP. HCM</p>
+                    <a href="https://maps.app.goo.gl/cS8ibMHKCuf73TcaA" target="_blank" class="footer-link d-inline-flex align-items-center animated-link-hover"><i class="fas fa-map me-2"></i> Xem trên Google Maps</a>
+                </div>
+            </div>
+            <hr class="footer-divider" />
+            <div class="text-center">
+                <p class="footer-copyright animated-text-fade-in">© 2025 STOREBOOKS - Bản quyền thuộc về nhóm phát triển.</p>
+                <div class="social-icons mt-3">
+                    <a href="https://www.facebook.com/danh.vothanh.7549185" target="_blank" rel="noopener noreferrer" class="social-icon animated-social-hover" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/thanhdanh.1234/" target="_blank" rel="noopener noreferrer" class="social-icon animated-social-hover" title="Instagram"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow-lg border-0 rounded-4 animated-modal-pop">
+                @* Thêm animated-modal-pop *@
+                <form asp-controller="Account" asp-action="ChangePassword" method="post">
+                    <div class="modal-header bg-gradient-primary text-white rounded-top-4">
+                        <h5 class="modal-title" id="changePasswordModalLabel">Đổi mật khẩu</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <div class="mb-3">
+                            <label for="oldPassword" class="form-label">Mật khẩu cũ</label>
+                            <input type="password" class="form-control rounded-pill" id="oldPassword" name="OldPassword" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="newPassword" class="form-label">Mật khẩu mới</label>
+                            <input type="password" class="form-control rounded-pill" id="newPassword" name="NewPassword" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Xác nhận mật khẩu mới</label>
+                            <input type="password" class="form-control rounded-pill" id="confirmPassword" name="ConfirmPassword" required />
+                        </div>
+                        @if (!string.IsNullOrEmpty(ViewBag.ThongBao))
+                        {
+                            <div class="alert alert-info mt-3 rounded-3" role="alert">@ViewBag.ThongBao</div>
+                        }
+                    </div>
+                    <div class="modal-footer d-flex justify-content-center p-3">
+                        <button type="submit" class="btn btn-primary-gradient rounded-pill px-4 animated-button-hover">Đổi mật khẩu</button> @* Thêm animated-button-hover *@
+                        <button type="button" class="btn btn-secondary-outline rounded-pill px-4 animated-button-hover" data-bs-dismiss="modal">Hủy</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    @* Chat Widget - Chatbox tư vấn khách hàng *@
+    <partial name="_ChatWidget" />
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&family=Roboto:wght@400;500;700&display=swap">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

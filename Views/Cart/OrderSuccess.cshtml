@@ -1,0 +1,69 @@
+﻿@{
+    ViewData["Title"] = "Đặt hàng thành công";
+    var maDonHang = TempData["MaDonHang"];
+}
+
+<div class="container mt-5">
+    <div class="card p-5 text-center shadow-lg rounded-15 border-0">
+        <div class="alert alert-success custom-alert mb-4" role="alert">
+            <h2 class="alert-heading display-4 fw-bolder text-success mb-3">
+                <i class="fas fa-check-circle me-3 fa-beat-fade"></i> Đặt hàng thành công!
+            </h2>
+            <p class="lead text-dark mb-4">Cảm ơn bạn đã mua sách tại cửa hàng của chúng tôi.</p>
+            @if (maDonHang != null)
+            {
+                <p class="fs-5 fw-bold text-primary-color mb-4">
+                    Mã đơn hàng của bạn: <span class="text-accent-color">#@maDonHang</span>
+                </p>
+            }
+            <p class="text-muted fst-italic">Chúng tôi sẽ xử lý đơn hàng của bạn trong thời gian sớm nhất.</p>
+        </div>
+
+        <a href="@Url.Action("Index", "Books")" class="btn btn-primary-gradient rounded-pill mt-3 py-3 px-5">
+            <i class="fas fa-book me-2"></i> Tiếp tục mua sắm
+        </a>
+        <a href="@Url.Action("Index", "Home")" class="btn btn-secondary-outline rounded-pill mt-3 py-3 px-5">
+            <i class="fas fa-home me-2"></i> Về trang chủ
+        </a>
+    </div>
+</div>
+
+<style>
+    /* Add some specific animations for success page */
+    @@keyframes fade-in-down {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes beat-fade {
+        0% {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        50% {
+            transform: scale(1.1);
+            opacity: 0.8;
+        }
+
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    .alert-heading {
+        animation: fade-in-down 0.8s ease-out;
+    }
+
+    .fa-beat-fade {
+        animation: beat-fade 1.5s infinite alternate;
+    }
+</style>

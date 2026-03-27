@@ -1,0 +1,189 @@
+﻿@model IEnumerable<STOREBOOKS.Models.Order>
+@{
+    ViewData["Title"] = "Quản lý Đơn hàng";
+}
+
+<div class="admin-page-header">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="admin-page-title">
+                <i class="fas fa-shopping-bag me-2"></i>
+                Quản lý đơn hàng
+            </h2>
+            <p class="admin-page-subtitle">Xem và quản lý tất cả đơn hàng trong hệ thống</p>
+        </div>
+    </div>
+</div>
+
+<partial name="_AdminNav" />
+
+<div class="container py-4">
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="bg-green-100 text-green-800 p-4 rounded-lg mb-6 shadow-md animate-fade-in-down">
+            <strong class="font-bold">Thành công!</strong> @TempData["Message"]
+        </div>
+    }
+
+    <div class="overflow-x-auto shadow-xl rounded-lg">
+        <table class="min-w-full bg-white">
+            <thead class="bg-blue-600 text-white modern-table-header-admin">
+                <tr>
+                    <th class="py-3 px-4 text-left">Mã Đơn</th>
+                    <th class="py-3 px-4 text-left">Người đặt</th>
+                    <th class="py-3 px-4 text-left">Ngày đặt</th>
+                    <th class="py-3 px-4 text-left">Trạng thái</th>
+                    <th class="py-3 px-4 text-center">Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="5" class="py-6 px-4 text-center text-gray-600 text-lg">Không có đơn hàng nào trong hệ thống.</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var item in Model)
+                    {
+                        <tr class="border-t border-gray-200 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-200">
+                            <td class="py-3 px-4 font-bold text-gray-800">#@item.OrderId</td>
+                            <td class="py-3 px-4">@item.TenKhachHang <span class="text-gray-500 text-sm">(@item.NguoiDung?.TaiKhoan?.Email)</span></td>
+                            <td class="py-3 px-4">@item.NgayDat.ToString("dd/MM/yyyy")</td>
+                            <td class="py-3 px-4">
+                                <span class="status-badge status-@item.TrangThai.Replace(" ", "-").ToLower()">@item.TrangThai</span>
+                            </td>
+                            <td class="py-3 px-4 text-center flex justify-center items-center space-x-3">
+                                <a class="action-btn-detail" href="/admin/order/details/@item.OrderId" title="Xem chi tiết">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                </a>
+                                <a class="action-btn-update" href="/admin/order/capnhattrangthai/@item.OrderId" title="Cập nhật trạng thái">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .h2-gradient {
+        background: linear-gradient(45deg, #6a11cb, #2575fc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: inline-block;
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .text-primary-color {
+        color: #6a11cb;
+    }
+
+    .modern-table-header-admin {
+        background: linear-gradient(to right, #2575fc, #6a11cb); /* Blue-purple gradient */
+        color: white;
+        padding: 1rem 1.5rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+    }
+
+    /* Status Badges - Duplicated for clarity, better in site.css */
+    .status-badge {
+        display: inline-block;
+        padding: 0.3em 0.8em;
+        border-radius: 9999px; /* Pill shape */
+        font-weight: bold;
+        font-size: 0.9em;
+        text-transform: capitalize;
+        /* color: white; Default text color for badges - will be overridden for 'Đã giao' */
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .status-cho-xac-nhan {
+        background: linear-gradient(45deg, #ffc107, #ff9800);
+        color: white;
+    }
+
+    .status-dang-giao {
+        background: linear-gradient(45deg, #007bff, #17a2b8);
+        color: white;
+    }
+
+    .status-da-giao {
+        background: linear-gradient(45deg, #28a745, #20c997);
+        **color: black; /* Đã đổi màu chữ thành đen */
+        **
+    }
+
+    .status-da-huy {
+        background: linear-gradient(45deg, #dc3545, #fd7e14);
+        color: white;
+    }
+
+    /* Action Buttons with icons */
+    .action-btn-detail, .action-btn-update {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px; /* Fixed width for consistent size */
+        height: 36px; /* Fixed height */
+        border-radius: 50%; /* Circular buttons */
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        color: white; /* Đảm bảo màu chữ trắng cho icon bên trong */
+    }
+
+    .action-btn-detail {
+        background: linear-gradient(45deg, #2575fc, #007bff); /* Blue gradient */
+    }
+
+    .action-btn-update {
+        background: linear-gradient(45deg, #ffc107, #ff9800); /* Yellow/Orange gradient */
+    }
+
+    .action-btn-detail:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        background: linear-gradient(45deg, #007bff, #2575fc); /* Slightly different gradient on hover */
+    }
+
+    .action-btn-update:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        background: linear-gradient(45deg, #ff9800, #ffc107); /* Slightly different gradient on hover */
+    }
+
+    /* Animation for TempData message */
+    @@keyframes fade-in-down {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-fade-in-down {
+        animation: fade-in-down 0.5s ease-out forwards;
+    }
+
+    /* Responsive for mobile */
+    @@media (max-width: 768px) {
+        .action-btn-detail, .action-btn-update {
+            width: 32px;
+            height: 32px;
+        }
+    }
+</style>

@@ -1,0 +1,327 @@
+﻿@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+@model IEnumerable<STOREBOOKS.Models.Sach>
+
+@{
+    ViewData["Title"] = "Trang Chủ - CỬA HÀNG SÁCH";
+    var sachGiamGia = ViewBag.SachGiamGia as List<STOREBOOKS.Models.Sach>;
+    var sachNoiBat = ViewBag.SachNoiBat as List<STOREBOOKS.Models.Sach>;
+    var danhSachYeuThich = ViewBag.ListYeuThich as List<int> ?? new List<int>();
+    int pageNumber = ViewBag.PageNumber ?? 1;
+    int totalPages = ViewBag.TotalPages ?? 1;
+}
+
+<section class="mb-5">
+    <div id="bookCarousel" class="carousel slide animated-carousel" data-bs-ride="carousel"> @* Thêm animated-carousel *@
+        <div class="carousel-inner rounded-4 shadow-md">
+            <div class="carousel-item active">
+                <img src="https://thietkelogo.edu.vn/uploads/images/thiet-ke-do-hoa-khac/banner-sach/13.png" class="d-block w-100 carousel-img-effect" alt="Banner 1" /> @* Thêm carousel-img-effect *@
+            </div>
+            <div class="carousel-item">
+                <img src="https://thietkelogo.edu.vn/uploads/images/thiet-ke-do-hoa-khac/banner-sach/2.png" class="d-block w-100 carousel-img-effect" alt="Banner 2" />
+            </div>
+            <div class="carousel-item">
+                <img src="https://thietkelogo.edu.vn/uploads/images/thiet-ke-do-hoa-khac/banner-sach/11.png" class="d-block w-100 carousel-img-effect" alt="Banner 3" />
+            </div>
+            <div class="carousel-item">
+                <img src="https://thietkelogo.edu.vn/uploads/images/thiet-ke-do-hoa-khac/banner-sach/7.png" class="d-block w-100 carousel-img-effect" alt="Banner 4" />
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#bookCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#bookCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</section>
+
+<div class="mb-5 d-flex justify-content-center gap-3 animated-fade-in-up"> @* Thêm animated-fade-in-up *@
+    <button id="btnGiamGia" class="btn btn-primary-gradient active px-4 py-2 rounded-pill shadow-sm animated-button-toggle"> @* Thêm animated-button-toggle *@
+        <i class="fas fa-tags me-2"></i>Sách Khuyến Mãi
+    </button>
+    <button id="btnNoiBat" class="btn btn-accent-gradient px-4 py-2 rounded-pill shadow-sm animated-button-toggle">
+        <i class="fas fa-fire me-2"></i>Sách Bán Chạy
+    </button>
+</div>
+
+@if (sachGiamGia != null && sachGiamGia.Any())
+{
+    <section id="sectionGiamGia" class="mb-5 animated-section-fade-in"> @* Thêm animated-section-fade-in *@
+        <h3 class="text-danger mb-4 animated-heading-reveal"><i class="fas fa-percent"></i> ƯU ĐÃI HÔM NAY</h3>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-5 g-4">
+            @foreach (var item in sachGiamGia)
+            {
+                var giaSauGiam = item.Gia - (item.Gia * (decimal)(item.GiamGia ?? 0) / 100);
+                <div class="col animated-card-pop"> @* Thêm animated-card-pop *@
+                    <div class="card h-100 shadow-sm border-0 position-relative book-card-hover"> @* Thêm book-card-hover *@
+                        <img src="@Url.Content("~/images/" + item.HinhAnh)" class="card-img-top book-img-zoom" alt="@item.TenSach" /> @* Thêm book-img-zoom *@
+                        <span class="sale-badge">-@item.GiamGia%</span>
+                        <button class="btn btn-heart position-absolute top-0 start-0 m-2 animated-heart-toggle" onclick="toggleYeuThich(@item.MaSach)"> @* Thêm animated-heart-toggle *@
+                            <i class="fas fa-heart @(danhSachYeuThich.Contains(item.MaSach) ? "text-danger" : "text-secondary") fs-5"></i>
+                        </button>
+                        <div class="card-body text-center">
+                            <h6 class="card-title">@item.TenSach</h6>
+                            <p class="card-text text-muted">@item.TacGia</p>
+                            <p class="card-price">
+                                @giaSauGiam.ToString("N0")đ
+                                <span class="text-decoration-line-through">@item.Gia.ToString("N0")đ</span>
+                            </p>
+                            <div class="d-grid gap-2">
+                                @if (ViewBag.IsLoggedIn == true)
+                                {
+                                    <button class="btn btn-primary-gradient rounded-pill animated-button-hover" onclick="addToCart(@item.MaSach)"> @* Thêm animated-button-hover *@
+                                        <i class="fas fa-cart-plus me-1"></i> Thêm vào giỏ
+                                    </button>
+                                }
+                                <a href="@Url.Action("Details", new { id = item.MaSach })" class="btn btn-info-outline rounded-pill animated-button-hover">
+                                    <i class="fas fa-info-circle me-1"></i> Chi tiết
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+}
+
+@if (sachNoiBat != null && sachNoiBat.Any())
+{
+    <section id="sectionNoiBat" class="mb-5 animated-section-fade-in" style="display:none;">
+        <h3 class="text-warning mb-4 animated-heading-reveal"><i class="fas fa-chart-line"></i> SÁCH BÁN CHẠY NHẤT</h3>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-5 g-4">
+            @foreach (var item in sachNoiBat)
+            {
+                var giaBan = item.GiamGia > 0 ? item.Gia - (item.Gia * (decimal)(item.GiamGia ?? 0) / 100) : item.Gia;
+                <div class="col animated-card-pop">
+                    <div class="card h-100 shadow-sm border-0 position-relative book-card-hover">
+                        <img src="@Url.Content("~/images/" + item.HinhAnh)" class="card-img-top book-img-zoom" alt="@item.TenSach" />
+                        @if (item.GiamGia > 0)
+                        {
+                            <span class="sale-badge">-@item.GiamGia%</span>
+                        }
+                        <button class="btn btn-heart position-absolute top-0 start-0 m-2 animated-heart-toggle" onclick="toggleYeuThich(@item.MaSach)">
+                            <i class="fas fa-heart @(danhSachYeuThich.Contains(item.MaSach) ? "text-danger" : "text-secondary") fs-5"></i>
+                        </button>
+                        <div class="card-body text-center">
+                            <h6 class="card-title">@item.TenSach</h6>
+                            <p class="card-text text-muted">@item.TacGia</p>
+                            <p class="card-price">
+                                @giaBan.ToString("N0")đ
+                                @if (item.GiamGia > 0)
+                                {
+                                    <span class="text-decoration-line-through">@item.Gia.ToString("N0")đ</span>
+                                }
+                            </p>
+                            <div class="d-grid gap-2">
+                                @if (ViewBag.IsLoggedIn == true)
+                                {
+                                    <button class="btn btn-primary-gradient rounded-pill animated-button-hover" onclick="addToCart(@item.MaSach)">
+                                        <i class="fas fa-cart-plus me-1"></i> Thêm vào giỏ
+                                    </button>
+                                }
+                                <a href="@Url.Action("Details", new { id = item.MaSach })" class="btn btn-info-outline rounded-pill animated-button-hover">
+                                    <i class="fas fa-info-circle me-1"></i> Chi tiết
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+}
+
+<section class="mb-5 animated-section-fade-in"> @* Thêm animated-section-fade-in *@
+    <h3 class="text-primary mb-4 animated-heading-reveal"><i class="fas fa-book-open"></i> TẤT CẢ SÁCH</h3>
+
+    <div class="mb-4 d-flex justify-content-between align-items-center">
+        @if (ViewBag.IsAdmin == true)
+        {
+            <a href="@Url.Action("Create")" class="btn btn-accent-gradient rounded-pill px-4 py-2 animated-button-hover"> @* Thêm animated-button-hover *@
+                <i class="fas fa-plus me-1"></i> Thêm sách mới
+            </a>
+        }
+        <div>
+        </div>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-5 g-4">
+        @foreach (var item in Model)
+        {
+            var giaBan = item.GiamGia > 0 ? item.Gia - (item.Gia * (decimal)(item.GiamGia ?? 0) / 100) : item.Gia;
+            bool isYeuThich = danhSachYeuThich.Contains(item.MaSach);
+
+            <div class="col animated-card-pop">
+                <div class="card h-100 shadow-sm position-relative book-card-hover">
+                    <img src="@Url.Content("~/images/" + item.HinhAnh)" class="card-img-top book-img-zoom" alt="@item.TenSach" />
+                    @if (item.GiamGia > 0)
+                    {
+                        <span class="sale-badge">-@item.GiamGia%</span>
+                    }
+                    <button class="btn btn-heart position-absolute top-0 start-0 m-2 animated-heart-toggle" onclick="toggleYeuThich(@item.MaSach)">
+                        <i class="fas fa-heart @(isYeuThich ? "text-danger" : "text-secondary") fs-5"></i>
+                    </button>
+                    <div class="card-body text-center">
+                        <h6 class="card-title">@item.TenSach</h6>
+                        <p class="card-text text-muted">@item.TacGia</p>
+                        <p class="card-price">
+                            @giaBan.ToString("N0")đ
+                            @if (item.GiamGia > 0)
+                            {
+                                <span class="text-decoration-line-through">@item.Gia.ToString("N0")đ</span>
+                            }
+                        </p>
+                        <div class="d-grid gap-2">
+                            @if (ViewBag.IsLoggedIn == true)
+                            {
+                                <button class="btn btn-primary-gradient rounded-pill animated-button-hover" onclick="addToCart(@item.MaSach)">
+                                    <i class="fas fa-cart-plus me-1"></i> Thêm vào giỏ
+                                </button>
+                            }
+                            <a href="@Url.Action("Details", new { id = item.MaSach })" class="btn btn-info-outline rounded-pill animated-button-hover">
+                                <i class="fas fa-info-circle me-1"></i> Chi tiết
+                            </a>
+                            @if (ViewBag.IsAdmin == true)
+                            {
+                                <div class="d-flex justify-content-between mt-2 gap-2">
+                                    <a href="@Url.Action("Edit", new { id = item.MaSach })" class="btn btn-warning btn-sm w-50 rounded-pill animated-button-hover">
+                                        <i class="fas fa-edit"></i> Sửa
+                                    </a>
+                                    <a href="@Url.Action("Delete", new { id = item.MaSach })" class="btn btn-danger btn-sm w-50 rounded-pill animated-button-hover">
+                                        <i class="fas fa-trash"></i> Xóa
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (totalPages > 1)
+    {
+        <nav aria-label="Page navigation" class="mt-5 animated-fade-in-up"> @* Thêm animated-fade-in-up *@
+            <ul class="pagination justify-content-center">
+                <li class="page-item @(pageNumber == 1 ? "disabled" : "")">
+                    <a class="page-link animated-pagination-link" href="@Url.Action("Index", new { page = pageNumber - 1, keyword = Context.Request.Query["keyword"], maDanhMuc = Context.Request.Query["maDanhMuc"] })">Trước</a> @* Thêm animated-pagination-link *@
+                </li>
+                @for (int i = 1; i <= totalPages; i++)
+                {
+                    <li class="page-item @(i == pageNumber ? "active" : "")">
+                        <a class="page-link animated-pagination-link" href="@Url.Action("Index", new { page = i, keyword = Context.Request.Query["keyword"], maDanhMuc = Context.Request.Query["maDanhMuc"] })">@i</a>
+                    </li>
+                }
+                <li class="page-item @(pageNumber == totalPages ? "disabled" : "")">
+                    <a class="page-link animated-pagination-link" href="@Url.Action("Index", new { page = pageNumber + 1, keyword = Context.Request.Query["keyword"], maDanhMuc = Context.Request.Query["maDanhMuc"] })">Sau</a>
+                </li>
+            </ul>
+        </nav>
+    }
+</section>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Chuyển hiển thị giữa sách khuyến mãi và sách bán chạy
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnGiamGia = document.getElementById('btnGiamGia');
+            const btnNoiBat = document.getElementById('btnNoiBat');
+            const sectionGiamGia = document.getElementById('sectionGiamGia');
+            const sectionNoiBat = document.getElementById('sectionNoiBat');
+
+            function showSection(sectionToShow, sectionToHide, activeBtn, inactiveBtn) {
+                sectionToShow.style.display = 'block';
+                sectionToHide.style.display = 'none';
+                activeBtn.classList.add('active');
+                inactiveBtn.classList.remove('active');
+            }
+
+            btnGiamGia.addEventListener('click', function () {
+                showSection(sectionGiamGia, sectionNoiBat, btnGiamGia, btnNoiBat);
+            });
+
+            btnNoiBat.addEventListener('click', function () {
+                showSection(sectionNoiBat, sectionGiamGia, btnNoiBat, btnGiamGia);
+            });
+
+            // Mặc định hiển thị sách khuyến mãi khi tải trang
+            if (sectionGiamGia && sectionNoiBat) { // Đảm bảo các phần tử tồn tại
+                showSection(sectionGiamGia, sectionNoiBat, btnGiamGia, btnNoiBat);
+            }
+        });
+
+        // Add to Cart function
+        function addToCart(id) {
+            fetch(`/Cart/AddToCart/${id}`, {
+                method: 'POST',
+                headers: {
+                    'RequestVerificationToken': '@Antiforgery.GetAndStoreTokens(Context).RequestToken',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                Swal.fire({
+                    icon: data.success ? 'success' : 'error',
+                    title: data.success ? 'Đã thêm vào giỏ!' : 'Lỗi!',
+                    text: data.message || '',
+                    timer: 2000,
+                    showConfirmButton: false,
+                    customClass: {
+                        popup: 'swal2-responsive'
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error adding to cart:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: 'Có lỗi xảy ra khi thêm vào giỏ hàng. Vui lòng thử lại.'
+                });
+            });
+        }
+
+        // Toggle Favorite function
+        function toggleYeuThich(id) {
+            fetch(`/YeuThich/Toggle/${id}`, {
+                method: 'POST',
+                headers: {
+                    'RequestVerificationToken': '@Antiforgery.GetAndStoreTokens(Context).RequestToken',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: data.message,
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        location.reload(); // Tải lại trang để cập nhật trạng thái icon
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi',
+                        text: data.message
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error toggling favorite:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: 'Có lỗi xảy ra khi cập nhật yêu thích. Vui lòng thử lại.'
+                });
+            });
+        }
+    </script>
+}

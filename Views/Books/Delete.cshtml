@@ -1,0 +1,51 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@model STOREBOOKS.Models.Sach
+@{
+    ViewData["Title"] = "Xóa sách";
+    var isAdmin = HttpContextAccessor.HttpContext.Session.GetString("VaiTro") == "Admin";
+}
+
+@if (isAdmin)
+{
+    <div class="admin-page-header">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="admin-page-title">
+                    <i class="fas fa-trash me-2"></i>
+                    Xóa sách
+                </h2>
+                <p class="admin-page-subtitle">Xác nhận xóa sách khỏi hệ thống</p>
+            </div>
+            <a asp-controller="Books" asp-action="Index" class="btn btn-light btn-sm">
+                <i class="fas fa-arrow-left me-2"></i> Quay lại
+            </a>
+        </div>
+    </div>
+
+    <partial name="_AdminNav" />
+}
+
+<div class="container mt-5">
+    @if (!isAdmin)
+    {
+        <h2 class="book-list-title"><i class="fas fa-trash me-2"></i> Xóa sách</h2>
+    }
+    <div class="card p-4">
+        <div class="book-details">
+            <p><strong>Tên sách:</strong> @Model.TenSach</p>
+            <p><strong>Tác giả:</strong> @Model.TacGia</p>
+            <p class="text-danger"><strong>Giá:</strong> @Model.Gia.ToString("N0") VNĐ</p>
+            <p><strong>Danh mục:</strong> @(Model.DanhMuc != null ? Model.DanhMuc.TenDanhMuc : "Không có danh mục")</p>
+            <p><strong>Mô tả:</strong> @Model.MoTa</p>
+            <p class="text-danger fw-bold">Bạn có chắc chắn muốn xóa sách này không?</p>
+            <form asp-action="Delete">
+                <input type="hidden" asp-for="MaSach" />
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-danger rounded-pill">Xóa</button>
+                    <a href="@Url.Action("Index")" class="btn btn-secondary rounded-pill">Quay lại</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

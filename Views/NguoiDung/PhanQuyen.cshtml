@@ -1,0 +1,52 @@
+﻿@model STOREBOOKS.Models.NguoiDung
+@{
+    ViewData["Title"] = "Phân quyền người dùng";
+}
+
+<div class="admin-page-header">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="admin-page-title">
+                <i class="fas fa-user-shield me-2"></i>
+                Phân quyền người dùng
+            </h2>
+            <p class="admin-page-subtitle">Phân quyền cho: <strong>@Model.TaiKhoan?.TenDangNhap</strong></p>
+        </div>
+        <a href="/admin/nguoidung" class="btn btn-light btn-sm">
+            <i class="fas fa-arrow-left me-2"></i> Quay lại
+        </a>
+    </div>
+</div>
+
+<partial name="_AdminNav" />
+
+<div class="container mt-4">
+    <div class="card p-4 shadow-sm">
+
+        <form action="/admin/nguoidung/phanquyen" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="MaNguoiDung" value="@Model.MaNguoiDung" />
+
+            <div class="form-group mb-3">
+                <label class="form-label fw-bold">Vai trò hiện tại:</label>
+                <input class="form-control bg-light" value="@Model.TaiKhoan?.VaiTro" disabled />
+            </div>
+
+            <div class="form-group mb-4">
+                <label class="form-label fw-bold">Chọn vai trò mới:</label>
+                <select class="form-select rounded-pill" name="VaiTro">
+                    <option value="User" selected="@(Model.TaiKhoan?.VaiTro == "User" ? "selected" : null)">User</option>
+                    <option value="Admin" selected="@(Model.TaiKhoan?.VaiTro == "Admin" ? "selected" : null)">Admin</option>
+                    <option value="Blocked" selected="@(Model.TaiKhoan?.VaiTro == "Blocked" ? "selected" : null)">Blocked</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-success rounded-pill">
+                <i class="fas fa-save"></i> Cập nhật vai trò
+            </button>
+            <a asp-action="Index" class="btn btn-secondary rounded-pill">
+                <i class="fas fa-arrow-left"></i> Quay lại
+            </a>
+        </form>
+    </div>
+</div>

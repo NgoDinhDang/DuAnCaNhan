@@ -1,0 +1,240 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>STOREBOOKS</name>
+    </assembly>
+    <members>
+        <member name="M:STOREBOOKS.Controllers.ApiAuthController.Login(STOREBOOKS.Controllers.LoginRequest)">
+            <summary>
+            Đăng nhập và nhận JWT token
+            </summary>
+            <param name="request">Thông tin đăng nhập (username và password)</param>
+            <returns>JWT token và thông tin user nếu đăng nhập thành công</returns>
+            <response code="200">Đăng nhập thành công, trả về token</response>
+            <response code="400">Thông tin đăng nhập không hợp lệ</response>
+            <response code="401">Tên đăng nhập hoặc mật khẩu không đúng</response>
+            <response code="403">Tài khoản bị chặn</response>
+        </member>
+        <member name="M:STOREBOOKS.Controllers.ApiAuthController.Register(STOREBOOKS.Controllers.RegisterRequest)">
+            <summary>
+            Đăng ký tài khoản mới
+            </summary>
+            <param name="request">Thông tin đăng ký (username, password, email)</param>
+            <returns>JWT token và thông tin user mới tạo</returns>
+            <response code="200">Đăng ký thành công, trả về token</response>
+            <response code="400">Thông tin đăng ký không hợp lệ</response>
+            <response code="409">Username hoặc email đã tồn tại</response>
+        </member>
+        <member name="M:STOREBOOKS.Controllers.ApiAuthController.GetCurrentUser">
+            <summary>
+            Lấy thông tin user hiện tại từ JWT token
+            </summary>
+            <remarks>
+            Yêu cầu header: Authorization: Bearer {token}
+            </remarks>
+            <returns>Thông tin user hiện tại</returns>
+            <response code="200">Trả về thông tin user</response>
+            <response code="401">Token không hợp lệ hoặc hết hạn</response>
+            <response code="404">Không tìm thấy user</response>
+        </member>
+        <member name="M:STOREBOOKS.Controllers.ApiAuthController.RefreshToken">
+            <summary>
+            Refresh token - Tạo JWT token mới từ token hiện tại
+            </summary>
+            <remarks>
+            Yêu cầu header: Authorization: Bearer {token}
+            </remarks>
+            <returns>JWT token mới</returns>
+            <response code="200">Trả về token mới</response>
+            <response code="401">Token không hợp lệ hoặc user bị chặn</response>
+        </member>
+        <member name="T:STOREBOOKS.Controllers.LoginRequest">
+            <summary>
+            Request model cho đăng nhập
+            </summary>
+        </member>
+        <member name="P:STOREBOOKS.Controllers.LoginRequest.Username">
+            <summary>
+            Tên đăng nhập
+            </summary>
+        </member>
+        <member name="P:STOREBOOKS.Controllers.LoginRequest.Password">
+            <summary>
+            Mật khẩu
+            </summary>
+        </member>
+        <member name="T:STOREBOOKS.Controllers.RegisterRequest">
+            <summary>
+            Request model cho đăng ký
+            </summary>
+        </member>
+        <member name="P:STOREBOOKS.Controllers.RegisterRequest.Username">
+            <summary>
+            Tên đăng nhập (phải duy nhất)
+            </summary>
+        </member>
+        <member name="P:STOREBOOKS.Controllers.RegisterRequest.Password">
+            <summary>
+            Mật khẩu
+            </summary>
+        </member>
+        <member name="P:STOREBOOKS.Controllers.RegisterRequest.Email">
+            <summary>
+            Email (phải hợp lệ và duy nhất)
+            </summary>
+        </member>
+        <member name="M:STOREBOOKS.Controllers.ApiOrderController.List(System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Int32,System.Int32)">
+            <summary>
+            Lấy danh sách đơn hàng với phân trang và lọc
+            </summary>
+            <param name="status">Lọc theo trạng thái đơn hàng (ví dụ: "Chờ xác nhận", "Đã thanh toán")</param>
+            <param name="fromDate">Lọc từ ngày (format: yyyy-MM-dd)</param>
+            <param name="toDate">Lọc đến ngày (format: yyyy-MM-dd)</param>
+            <param name="page">Số trang (mặc định: 1)</param>
+            <param name="pageSize">Số lượng item mỗi trang (mặc định: 20)</param>
+            <returns>Danh sách đơn hàng với thông tin phân trang</returns>
+            <response code="200">Trả về danh sách đơn hàng</response>
+            <response code="401">Chưa đăng nhập</response>
+        </member>
+        <member name="M:STOREBOOKS.Controllers.ApiOrderController.Details(System.Int32)">
+            <summary>
+            Lấy chi tiết đơn hàng theo ID
+            </summary>
+            <param name="orderId">ID của đơn hàng</param>
+            <returns>Chi tiết đơn hàng bao gồm thông tin khách hàng và danh sách sản phẩm</returns>
+            <response code="200">Trả về chi tiết đơn hàng</response>
+            <response code="404">Không tìm thấy đơn hàng</response>
+        </member>
+        <member name="M:STOREBOOKS.Controllers.ApiOrderController.UpdateStatus(System.Int32,System.String)">
+            <summary>
+            Cập nhật trạng thái đơn hàng (Chỉ dành cho Admin)
+            </summary>
+            <param name="orderId">ID của đơn hàng</param>
+            <param name="status">Trạng thái mới (ví dụ: "Đã xác nhận", "Đang giao", "Đã giao")</param>
+            <returns>Kết quả cập nhật</returns>
+            <response code="200">Cập nhật thành công</response>
+            <response code="404">Không tìm thấy đơn hàng</response>
+            <response code="403">Không có quyền Admin</response>
+        </member>
+        <member name="M:STOREBOOKS.Controllers.ApiOrderController.Cancel(System.Int32)">
+            <summary>
+            Hủy đơn hàng (chỉ có thể hủy khi đơn hàng ở trạng thái "Chờ xác nhận")
+            </summary>
+            <param name="orderId">ID của đơn hàng cần hủy</param>
+            <returns>Kết quả hủy đơn hàng</returns>
+            <response code="200">Hủy đơn hàng thành công</response>
+            <response code="400">Không thể hủy đơn hàng (đã xác nhận hoặc đã giao)</response>
+            <response code="404">Không tìm thấy đơn hàng</response>
+        </member>
+        <member name="M:STOREBOOKS.Controllers.ApiOrderController.UserOrders(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Lấy danh sách đơn hàng của một user cụ thể
+            </summary>
+            <param name="userId">ID của user</param>
+            <param name="page">Số trang (mặc định: 1)</param>
+            <param name="pageSize">Số lượng item mỗi trang (mặc định: 20)</param>
+            <returns>Danh sách đơn hàng của user với thông tin phân trang</returns>
+            <response code="200">Trả về danh sách đơn hàng</response>
+        </member>
+        <member name="M:STOREBOOKS.Controllers.ApiStatsController.ValidateOrderIntegrity">
+            <summary>
+            Kiểm tra tính toàn vẹn dữ liệu - So sánh TongTien với tổng OrderDetails
+            </summary>
+            <returns>Danh sách đơn hàng có sai lệch dữ liệu</returns>
+        </member>
+        <member name="M:STOREBOOKS.Controllers.ApiStatsController.FixOrderIntegrity">
+            <summary>
+            Sửa chữa dữ liệu - Cập nhật TongTien từ OrderDetails cho tất cả đơn hàng
+            </summary>
+            <returns>Kết quả sửa chữa</returns>
+        </member>
+        <member name="T:STOREBOOKS.Data.SampleDataSeeder">
+            <summary>
+            Generates lightweight sample data so that analytic pages (thống kê doanh thu) always have something to render.
+            </summary>
+        </member>
+        <member name="M:STOREBOOKS.Data.SampleDataSeeder.SeedRevenueDataAsync(STOREBOOKS.Data.ApplicationDbContext,System.Threading.CancellationToken)">
+            <summary>
+            Add 4 months of randomised order data when the Orders table is empty (typically on fresh databases).
+            </summary>
+        </member>
+        <member name="T:STOREBOOKS.Migrations.InitialCreate">
+            <inheritdoc />
+        </member>
+        <member name="M:STOREBOOKS.Migrations.InitialCreate.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:STOREBOOKS.Migrations.InitialCreate.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:STOREBOOKS.Migrations.InitialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:STOREBOOKS.Migrations.AddChatMessagesTable">
+            <inheritdoc />
+        </member>
+        <member name="M:STOREBOOKS.Migrations.AddChatMessagesTable.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:STOREBOOKS.Migrations.AddChatMessagesTable.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:STOREBOOKS.Migrations.AddChatMessagesTable.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:STOREBOOKS.Migrations.AddPaymentTable">
+            <inheritdoc />
+        </member>
+        <member name="M:STOREBOOKS.Migrations.AddPaymentTable.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:STOREBOOKS.Migrations.AddPaymentTable.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:STOREBOOKS.Migrations.AddPaymentTable.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:STOREBOOKS.Migrations.AddTaiKhoanTable">
+            <inheritdoc />
+        </member>
+        <member name="M:STOREBOOKS.Migrations.AddTaiKhoanTable.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:STOREBOOKS.Migrations.AddTaiKhoanTable.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:STOREBOOKS.Migrations.AddTaiKhoanTable.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="P:STOREBOOKS.Models.Order.TongTienThucTe">
+            <summary>
+            Tính tổng tiền thực tế từ OrderDetails (SoLuong * Gia)
+            </summary>
+        </member>
+        <member name="P:STOREBOOKS.Models.Order.IsTongTienValid">
+            <summary>
+            Kiểm tra xem TongTien có khớp với tổng OrderDetails không
+            </summary>
+        </member>
+        <member name="M:STOREBOOKS.Models.Order.RecalculateTongTien">
+            <summary>
+            Cập nhật TongTien từ OrderDetails
+            </summary>
+        </member>
+        <member name="M:STOREBOOKS.Services.ChatbotService.GetAutoReply">
+            <summary>
+            Trả lời tự động sau mỗi tin nhắn của khách hàng
+            </summary>
+        </member>
+        <member name="M:STOREBOOKS.Services.JwtService.GenerateToken(STOREBOOKS.Models.TaiKhoan)">
+            <summary>
+            Tạo JWT token cho người dùng
+            </summary>
+        </member>
+        <member name="M:STOREBOOKS.Services.JwtService.ValidateToken(System.String)">
+            <summary>
+            Validate token và lấy thông tin user từ token
+            </summary>
+        </member>
+    </members>
+</doc>

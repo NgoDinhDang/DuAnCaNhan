@@ -1,0 +1,73 @@
+﻿@model STOREBOOKS.Models.NguoiDung
+@{
+    ViewData["Title"] = "Chỉnh sửa người dùng";
+}
+
+<div class="admin-page-header">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="admin-page-title">
+                <i class="fas fa-user-edit me-2"></i>
+                Chỉnh sửa người dùng
+            </h2>
+            <p class="admin-page-subtitle">Cập nhật thông tin người dùng</p>
+        </div>
+        <a href="/admin/nguoidung" class="btn btn-light btn-sm">
+            <i class="fas fa-arrow-left me-2"></i> Quay lại
+        </a>
+    </div>
+</div>
+
+<partial name="_AdminNav" />
+
+<div class="container mt-4">
+    <div class="card shadow p-4 rounded-4">
+
+        <form action="/admin/nguoidung/edit/@Model.MaNguoiDung" method="post" class="row g-3">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="MaNguoiDung" />
+            <input type="hidden" asp-for="TaiKhoan.MaTaiKhoan" />
+
+            <div class="col-md-6">
+                <label asp-for="TaiKhoan.TenDangNhap" class="form-label fw-semibold">Tên đăng nhập</label>
+                <input asp-for="TaiKhoan.TenDangNhap" class="form-control rounded-pill" />
+                <span asp-validation-for="TaiKhoan.TenDangNhap" class="text-danger small"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="TaiKhoan.MatKhau" class="form-label fw-semibold">Mật khẩu</label>
+                <input asp-for="TaiKhoan.MatKhau" type="password" class="form-control rounded-pill" />
+                <span asp-validation-for="TaiKhoan.MatKhau" class="text-danger small"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="TaiKhoan.Email" class="form-label fw-semibold">Email</label>
+                <input asp-for="TaiKhoan.Email" class="form-control rounded-pill" />
+                <span asp-validation-for="TaiKhoan.Email" class="text-danger small"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="TaiKhoan.VaiTro" class="form-label fw-semibold">Vai trò</label>
+                <select asp-for="TaiKhoan.VaiTro" class="form-select rounded-pill">
+                    <option value="">-- Chọn vai trò --</option>
+                    <option value="Admin">Admin</option>
+                    <option value="User">User</option>
+                </select>
+                <span asp-validation-for="TaiKhoan.VaiTro" class="text-danger small"></span>
+            </div>
+
+            <div class="col-12 d-flex justify-content-between mt-4">
+                <a href="/admin/nguoidung" class="btn btn-secondary rounded-pill px-4">
+                    <i class="fas fa-arrow-left"></i> Quay lại
+                </a>
+                <button type="submit" class="btn btn-primary rounded-pill px-4">
+                    <i class="fas fa-save"></i> Cập nhật
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,953 @@
+﻿@inject IHttpContextAccessor HttpContextAccessor
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+@model STOREBOOKS.Models.Sach
+
+@{
+    ViewData["Title"] = $"{Model.TenSach} - Chi tiết sách";
+    var giamGia = Model.GiamGia ?? 0;
+    var giaGoc = Model.Gia;
+    var giaSauGiam = giaGoc * (1 - (decimal)giamGia / 100);
+    var daDangNhap = HttpContextAccessor.HttpContext.Session.GetString("TenDangNhap") != null;
+    var isHot = Model.IsNoiBat;
+}
+
+<!-- Book Hero Section -->
+<section class="book-hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <!-- Book Image Gallery -->
+            <div class="col-lg-5">
+                <div class="book-gallery">
+                    <div class="main-image-container">
+                        @if (!string.IsNullOrEmpty(Model.HinhAnh))
+                        {
+                            <img src="@Url.Content("~/images/" + Model.HinhAnh)" alt="@Model.TenSach" class="main-book-image" id="mainBookImage" />
+                        }
+                        else
+                        {
+                            <div class="no-image-placeholder">
+                                <i class="fas fa-book-open"></i>
+                                <span>Không có hình ảnh</span>
+                            </div>
+                        }
+
+                        <!-- Badges -->
+                        @if (giamGia > 0)
+                        {
+                            <div class="discount-badge-large">
+                                <i class="fas fa-tags"></i>
+                                <span>-@giamGia%</span>
+                            </div>
+                        }
+
+                        @if (isHot)
+                        {
+                            <div class="hot-badge-large">
+                                <i class="fas fa-fire"></i>
+                                <span>HOT</span>
+                            </div>
+                        }
+
+                        <!-- Favorite Button -->
+                        @if (daDangNhap)
+                        {
+                            <button class="favorite-float-btn" onclick="toggleFavorite(@Model.MaSach)" id="favoriteBtn">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                        }
+                    </div>
+
+                    <!-- Thumbnail Gallery (placeholder for multiple images) -->
+                    <div class="thumbnail-gallery">
+                        <div class="thumbnail-item active">
+                            @if (!string.IsNullOrEmpty(Model.HinhAnh))
+                            {
+                                <img src="@Url.Content("~/images/" + Model.HinhAnh)" alt="@Model.TenSach" />
+                            }
+                            else
+                            {
+                                <div class="thumbnail-placeholder">
+                                    <i class="fas fa-book"></i>
+                                </div>
+                            }
+                        </div>
+                        <!-- Add more thumbnails here if you have multiple images -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Book Information -->
+            <div class="col-lg-7">
+                <div class="book-info-content">
+                    <!-- Breadcrumb -->
+                    <nav aria-label="breadcrumb" class="book-breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="@Url.Action("Index", "Home")">
+                                    <i class="fas fa-home"></i> Trang chủ
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="@Url.Action("Index", "Books")">Sách</a>
+                            </li>
+                            @if (Model.DanhMuc != null)
+                            {
+                                <li class="breadcrumb-item">
+                                    <a href="@Url.Action("Index", "Books", new { maDanhMuc = Model.DanhMuc.MaDanhMuc })">
+                                        @Model.DanhMuc.TenDanhMuc
+                                    </a>
+                                </li>
+                            }
+                            <li class="breadcrumb-item active">@Model.TenSach</li>
+                        </ol>
+                    </nav>
+
+                    <!-- Book Title -->
+                    <h1 class="book-title">@Model.TenSach</h1>
+
+                    <!-- Book Meta -->
+                    <div class="book-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-user"></i>
+                            <span><strong>Tác giả:</strong> @Model.TacGia</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-list"></i>
+                            <span><strong>Danh mục:</strong> @(Model.DanhMuc?.TenDanhMuc ?? "Không rõ")</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-calendar"></i>
+                            @* <span><strong>Ngày cập nhật:</strong> @Model.NgayCapNhat?.ToString("dd/MM/yyyy")</span> *@
+                        </div>
+                    </div>
+
+                    <!-- Rating -->
+                    <div class="book-rating-section">
+                        <div class="rating-display">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <span class="rating-text">4.5/5</span>
+                            <span class="review-count">(128 đánh giá)</span>
+                        </div>
+                    </div>
+
+                    <!-- Price Section -->
+                    <div class="book-price-section">
+                        @if (giamGia > 0)
+                        {
+                            <div class="price-container">
+                                <div class="current-price">@giaSauGiam.ToString("N0")đ</div>
+                                <div class="original-price">@giaGoc.ToString("N0")đ</div>
+                                <div class="discount-amount">Tiết kiệm @((giaGoc - giaSauGiam).ToString("N0"))đ</div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="price-container">
+                                <div class="current-price">@giaGoc.ToString("N0")đ</div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Stock Status -->
+                    <div class="stock-status">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Còn hàng (Sẵn sàng giao)</span>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="book-actions">
+                        @if (daDangNhap)
+                        {
+                            <div class="action-buttons-grid">
+                                <button class="btn-action btn-add-cart" onclick="addToCart(@Model.MaSach)">
+                                    <i class="fas fa-cart-plus"></i>
+                                    <span>Thêm vào giỏ</span>
+                                </button>
+
+                                <form asp-controller="Cart" asp-action="BuyNow" method="post" class="buy-now-form">
+                                    <input type="hidden" name="id" value="@Model.MaSach" />
+                                    <button type="submit" class="btn-action btn-buy-now">
+                                        <i class="fas fa-bolt"></i>
+                                        <span>Mua ngay</span>
+                                    </button>
+                                </form>
+                            </div>
+
+                            <div class="secondary-actions">
+                                <button class="btn-secondary-action" onclick="toggleFavorite(@Model.MaSach)">
+                                    <i class="fas fa-heart"></i>
+                                    <span>Yêu thích</span>
+                                </button>
+                                <button class="btn-secondary-action" onclick="shareBook()">
+                                    <i class="fas fa-share-alt"></i>
+                                    <span>Chia sẻ</span>
+                                </button>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="login-required">
+                                <a asp-controller="Account" asp-action="Login" class="btn-action btn-login-required">
+                                    <i class="fas fa-sign-in-alt"></i>
+                                    <span>Đăng nhập để mua</span>
+                                </a>
+                                <p class="login-hint">Đăng nhập để thêm vào giỏ hàng và mua sách</p>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Quick Info -->
+                    <div class="quick-info">
+                        <div class="info-item">
+                            <i class="fas fa-shipping-fast"></i>
+                            <div>
+                                <strong>Miễn phí vận chuyển</strong>
+                                <small>Đơn hàng từ 200.000đ</small>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <div>
+                                <strong>Bảo đảm chất lượng</strong>
+                                <small>Sách chính hãng 100%</small>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-undo"></i>
+                            <div>
+                                <strong>Đổi trả miễn phí</strong>
+                                <small>Trong 7 ngày</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Book Details Tabs -->
+<section class="book-details-section">
+    <div class="container">
+        <div class="book-details-container">
+            <!-- Navigation Tabs -->
+            <div class="details-nav">
+                <button class="nav-tab active" data-tab="description">
+                    <i class="fas fa-book-open"></i>
+                    Mô tả sách
+                </button>
+                <button class="nav-tab" data-tab="details">
+                    <i class="fas fa-info-circle"></i>
+                    Thông tin chi tiết
+                </button>
+                <button class="nav-tab" data-tab="reviews">
+                    <i class="fas fa-star"></i>
+                    Đánh giá (@(ViewBag.ReviewCount ?? 0))
+                </button>
+                <button class="nav-tab" data-tab="related">
+                    <i class="fas fa-lightbulb"></i>
+                    Sách liên quan
+                </button>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="tab-content-container">
+                <!-- Description Tab -->
+                <div class="tab-content active" id="description-tab">
+                    <div class="description-content">
+                        <h3>Giới thiệu sách</h3>
+                        <div class="book-description">
+                            @if (!string.IsNullOrEmpty(Model.MoTa))
+                            {
+                                <p>@Model.MoTa</p>
+                            }
+                            else
+                            {
+                                <p class="text-muted">Chưa có mô tả cho cuốn sách này.</p>
+                            }
+                        </div>
+
+                        <div class="book-highlights">
+                            <h4>Điểm nổi bật</h4>
+                            <ul class="highlights-list">
+                                <li><i class="fas fa-check"></i> Nội dung chất lượng cao</li>
+                                <li><i class="fas fa-check"></i> Tác giả uy tín</li>
+                                <li><i class="fas fa-check"></i> In ấn đẹp, chất lượng</li>
+                                <li><i class="fas fa-check"></i> Phù hợp với nhiều đối tượng đọc giả</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Details Tab -->
+                <div class="tab-content" id="details-tab">
+                    <div class="details-content">
+                        <h3>Thông tin chi tiết</h3>
+                        <div class="details-grid">
+                            <div class="detail-row">
+                                <span class="detail-label">Tên sách:</span>
+                                <span class="detail-value">@Model.TenSach</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Tác giả:</span>
+                                <span class="detail-value">@Model.TacGia</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Danh mục:</span>
+                                <span class="detail-value">@(Model.DanhMuc?.TenDanhMuc ?? "Không rõ")</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Giá gốc:</span>
+                                <span class="detail-value">@giaGoc.ToString("N0")đ</span>
+                            </div>
+                            @if (giamGia > 0)
+                            {
+                                <div class="detail-row">
+                                    <span class="detail-label">Giảm giá:</span>
+                                    <span class="detail-value text-success">---@giamGia%</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Giá sau giảm:</span>
+                                    <span class="detail-value text-primary fw-bold">@giaSauGiam.ToString("N0")đ</span>
+                                </div>
+                            }
+                            <div class="detail-row">
+                                <span class="detail-label">Ngày cập nhật:</span>
+                                @* <span class="detail-value">@Model.NgayCapNhat?.ToString("dd/MM/yyyy")</span> *@
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Tình trạng:</span>
+                                <span class="detail-value">
+                                    <span class="status-badge status-available">
+                                        <i class="fas fa-check-circle"></i>
+                                        Còn hàng
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Reviews Tab -->
+                <div class="tab-content" id="reviews-tab">
+                    <div class="reviews-content">
+                        <div class="reviews-header">
+                            <h3>Đánh giá từ độc giả</h3>
+                            <div class="reviews-summary">
+                                <div class="overall-rating">
+                                    <div class="rating-number">4.5</div>
+                                    <div class="rating-stars">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </div>
+                                    <div class="rating-count">@(ViewBag.ReviewCount ?? 0) đánh giá</div>
+                                </div>
+                                <div class="rating-breakdown">
+                                    <div class="rating-bar">
+                                        <span class="star-count">5 <i class="fas fa-star"></i></span>
+                                        <div class="progress">
+                                            <div class="progress-bar" style="width: 70%"></div>
+                                        </div>
+                                        <span class="percentage">70%</span>
+                                    </div>
+                                    <div class="rating-bar">
+                                        <span class="star-count">4 <i class="fas fa-star"></i></span>
+                                        <div class="progress">
+                                            <div class="progress-bar" style="width: 20%"></div>
+                                        </div>
+                                        <span class="percentage">20%</span>
+                                    </div>
+                                    <div class="rating-bar">
+                                        <span class="star-count">3 <i class="fas fa-star"></i></span>
+                                        <div class="progress">
+                                            <div class="progress-bar" style="width: 7%"></div>
+                                        </div>
+                                        <span class="percentage">7%</span>
+                                    </div>
+                                    <div class="rating-bar">
+                                        <span class="star-count">2 <i class="fas fa-star"></i></span>
+                                        <div class="progress">
+                                            <div class="progress-bar" style="width: 2%"></div>
+                                        </div>
+                                        <span class="percentage">2%</span>
+                                    </div>
+                                    <div class="rating-bar">
+                                        <span class="star-count">1 <i class="fas fa-star"></i></span>
+                                        <div class="progress">
+                                            <div class="progress-bar" style="width: 1%"></div>
+                                        </div>
+                                        <span class="percentage">1%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @if (daDangNhap)
+                        {
+                            <div class="write-review-section">
+                                <h4>Viết đánh giá của bạn</h4>
+                                <form id="formDanhGia" class="review-form">
+                                    <input type="hidden" name="maSach" value="@Model.MaSach" />
+
+                                    <div class="form-group">
+                                        <label class="form-label">Đánh giá của bạn</label>
+                                        <div class="rating-input">
+                                            <div id="starRating" class="stars-interactive">
+                                                @for (int i = 1; i <= 5; i++)
+                                                {
+                                                    <span class="star" data-value="@i">&#9733;</span>
+                                                }
+                                            </div>
+                                            <input type="hidden" id="soSao" name="soSao" value="0" />
+                                            <small class="form-help">Click vào ngôi sao để chọn đánh giá</small>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label">Bình luận của bạn</label>
+                                        <textarea name="binhLuan" class="form-control-modern" rows="4" placeholder="Chia sẻ cảm nhận của bạn về cuốn sách này..."></textarea>
+                                    </div>
+
+                                    <button type="submit" class="btn-submit-review">
+                                        <i class="fas fa-paper-plane"></i>
+                                        Gửi đánh giá
+                                    </button>
+                                </form>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="login-to-review">
+                                <div class="login-prompt">
+                                    <i class="fas fa-comment-alt"></i>
+                                    <h4>Đăng nhập để đánh giá</h4>
+                                    <p>Chia sẻ ý kiến của bạn về cuốn sách này</p>
+                                    <a asp-controller="Account" asp-action="Login" class="btn-login-review">
+                                        <i class="fas fa-sign-in-alt"></i>
+                                        Đăng nhập
+                                    </a>
+                                </div>
+                            </div>
+                        }
+
+                        <div class="reviews-list">
+                            <h4>Tất cả đánh giá</h4>
+                            <div id="danhGiaList" class="reviews-container">
+                                <div class="loading-reviews">
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                    <span>Đang tải đánh giá...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Related Books Tab -->
+                <div class="tab-content" id="related-tab">
+                    <div class="related-content">
+                        <h3>Sách liên quan</h3>
+                        @if (ViewBag.GoiYSach != null && ((List<STOREBOOKS.Models.Sach>)ViewBag.GoiYSach).Count > 0)
+                        {
+                            <div class="related-books-grid">
+                                @foreach (var item in (List<STOREBOOKS.Models.Sach>)ViewBag.GoiYSach)
+                                {
+                                    var gg = item.GiamGia ?? 0;
+                                    var giaSauGiamGoiY = item.Gia * (1 - (decimal)gg / 100);
+
+                                    <div class="related-book-card">
+                                        <a asp-action="Details" asp-route-id="@item.MaSach" class="book-link">
+                                            <div class="book-image">
+                                                <img src="~/images/@item.HinhAnh" alt="@item.TenSach" />
+                                                @if (gg > 0)
+                                                {
+                                                    <div class="discount-badge">---@gg%</div>
+                                                }
+                                            </div>
+                                            <div class="book-info">
+                                                <h5 class="book-title">@item.TenSach</h5>
+                                                <p class="book-author">@item.TacGia</p>
+                                                <div class="book-price">
+                                                    @if (gg > 0)
+                                                    {
+                                                        <span class="current-price">@giaSauGiamGoiY.ToString("N0")đ</span>
+                                                        <span class="original-price">@item.Gia.ToString("N0")đ</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="current-price">@item.Gia.ToString("N0")đ</span>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="no-related-books">
+                                <i class="fas fa-book-open"></i>
+                                <h4>Không có sách liên quan</h4>
+                                <p>Chúng tôi sẽ gợi ý những cuốn sách phù hợp với bạn</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+        
+        @if (daDangNhap)
+        {
+            <div class="card shadow-sm p-4 mb-4 border-0 bg-light">
+                <h5 class="mb-3"><i class="fas fa-edit"></i> Viết đánh giá của bạn</h5>
+                <form id="formDanhGia">
+                    <input type="hidden" name="maSach" value="@Model.MaSach" />
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Chọn số sao: <span class="text-danger">*</span></label>
+                        <div id="starRating" class="mb-2">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <span class="star" data-value="@i">&#9733;</span>
+                            }
+                        </div>
+                        <input type="hidden" id="soSao" name="soSao" value="0" />
+                        <small class="text-muted">Click vào ngôi sao để chọn đánh giá</small>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Bình luận của bạn: <span class="text-danger">*</span></label>
+                        <textarea name="binhLuan" class="form-control" rows="4" placeholder="Chia sẻ cảm nhận của bạn về cuốn sách này..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4">
+                        <i class="fas fa-paper-plane"></i> Gửi đánh giá
+                    </button>
+                </form>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i> 
+                <a asp-controller="Account" asp-action="Login" class="alert-link">Đăng nhập</a> để viết đánh giá cho sách này.
+            </div>
+        }
+
+        <div class="card shadow-sm p-4 border-0">
+            <h5 class="mb-3"><i class="fas fa-comments"></i> Các đánh giá từ độc giả</h5>
+            <div class="mb-3">
+                <strong>Đánh giá trung bình:</strong> 
+                <span id="soSaoTrungBinh" class="badge bg-warning text-dark fs-6">0 ⭐</span>
+            </div>
+            <hr />
+            <div id="danhGiaList" class="mt-3">
+                <div class="text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Đang tải...</span>
+                    </div>
+                    <p class="mt-2">Đang tải đánh giá...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .star {
+        font-size: 2.5rem;
+        color: #ddd;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: inline-block;
+    }
+
+    .star:hover,
+    .star.selected {
+        color: #ffc107;
+        transform: scale(1.1);
+    }
+
+    .star:hover {
+        filter: drop-shadow(0 0 5px rgba(255, 193, 7, 0.5));
+    }
+
+    .review-item {
+        transition: all 0.3s ease;
+    }
+
+    .review-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .rating-stars {
+        font-size: 1.1rem;
+        color: #ffc107;
+    }
+
+    #formDanhGia {
+        animation: fadeIn 0.5s ease;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    #danhGiaList {
+        max-height: 600px;
+        overflow-y: auto;
+    }
+
+    #danhGiaList::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    #danhGiaList::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    #danhGiaList::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 10px;
+    }
+
+    #danhGiaList::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+</style>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Tab Navigation
+            const navTabs = document.querySelectorAll('.nav-tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            navTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const targetTab = tab.getAttribute('data-tab');
+
+                    // Remove active class from all tabs and contents
+                    navTabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+
+                    // Add active class to clicked tab and corresponding content
+                    tab.classList.add('active');
+                    document.getElementById(`${targetTab}-tab`).classList.add('active');
+
+                    // Smooth scroll to tab content
+                    document.getElementById(`${targetTab}-tab`).scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                });
+            });
+
+            // Image Gallery
+            const thumbnails = document.querySelectorAll('.thumbnail-item');
+            const mainImage = document.getElementById('mainBookImage');
+
+            thumbnails.forEach(thumbnail => {
+                thumbnail.addEventListener('click', () => {
+                    thumbnails.forEach(t => t.classList.remove('active'));
+                    thumbnail.classList.add('active');
+
+                    const img = thumbnail.querySelector('img') || thumbnail.querySelector('.thumbnail-placeholder');
+                    if (img && mainImage) {
+                        mainImage.src = img.src || '';
+                    }
+                });
+            });
+
+            // Star Rating
+            const stars = document.querySelectorAll('#starRating .star');
+            const ratingInput = document.getElementById('soSao');
+
+            stars.forEach(star => {
+                star.addEventListener('click', () => {
+                    const value = star.getAttribute('data-value');
+                    ratingInput.value = value;
+
+                    stars.forEach(s => {
+                        s.classList.toggle('selected', parseInt(s.getAttribute('data-value')) <= parseInt(value));
+                    });
+                });
+
+                star.addEventListener('mouseenter', () => {
+                    const value = star.getAttribute('data-value');
+                    stars.forEach(s => {
+                        s.classList.toggle('hover', parseInt(s.getAttribute('data-value')) <= parseInt(value));
+                    });
+                });
+
+                star.addEventListener('mouseleave', () => {
+                    stars.forEach(s => s.classList.remove('hover'));
+                });
+            });
+
+            // Load Reviews
+            loadDanhGia();
+
+            // Form Submission
+            const form = document.getElementById('formDanhGia');
+            if (form) {
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    // Validation
+                    const soSao = document.getElementById('soSao').value;
+                    if (soSao === '0' || !soSao) {
+                        Swal.fire('Lỗi', 'Vui lòng chọn số sao đánh giá!', 'warning');
+                        return;
+                    }
+
+                    const binhLuan = form.querySelector('[name="binhLuan"]').value.trim();
+                    if (!binhLuan) {
+                        Swal.fire('Lỗi', 'Vui lòng nhập bình luận!', 'warning');
+                        return;
+                    }
+
+                    const formData = new FormData(form);
+
+                    // Show loading
+                    Swal.fire({
+                        title: 'Đang gửi đánh giá...',
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        willOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    fetch('/DanhGia/Create', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Thành công!',
+                                text: data.message,
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+
+                            // Reset form và stars
+                            form.reset();
+                            document.getElementById('soSao').value = '0';
+                            document.querySelectorAll('.star').forEach(s => s.classList.remove('selected'));
+
+                            // Load lại danh sách đánh giá
+                            setTimeout(() => {
+                                loadDanhGia();
+                            }, 500);
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Lỗi!',
+                                text: data.message
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi!',
+                            text: 'Có lỗi xảy ra khi gửi đánh giá. Vui lòng thử lại!'
+                        });
+                    });
+                });
+            }
+        });
+
+        // Add to Cart function
+        function addToCart(id) {
+            fetch(`/Cart/AddToCart/${id}`, {
+                method: 'POST',
+                headers: {
+                    'RequestVerificationToken': '@Antiforgery.GetAndStoreTokens(Context).RequestToken'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                Swal.fire({
+                    icon: data.success ? 'success' : 'error',
+                    title: data.success ? 'Đã thêm vào giỏ!' : 'Lỗi!',
+                    text: data.message || '',
+                    timer: 2000,
+                    showConfirmButton: false,
+                    customClass: {
+                        popup: 'swal2-responsive'
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error adding to cart:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: 'Có lỗi xảy ra khi thêm vào giỏ hàng. Vui lòng thử lại.'
+                });
+            });
+        }
+
+        // Toggle Favorite function
+        function toggleFavorite(id) {
+            const favoriteBtn = document.getElementById('favoriteBtn');
+            const heartIcon = favoriteBtn ? favoriteBtn.querySelector('i') : null;
+
+            fetch(`/YeuThich/Toggle/${id}`, {
+                method: 'POST',
+                headers: {
+                    'RequestVerificationToken': '@Antiforgery.GetAndStoreTokens(Context).RequestToken',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: data.message,
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        // Update favorite button state
+                        if (heartIcon) {
+                            if (data.isFavorite) {
+                                heartIcon.className = 'fas fa-heart active';
+                                favoriteBtn.classList.add('active');
+                            } else {
+                                heartIcon.className = 'fas fa-heart';
+                                favoriteBtn.classList.remove('active');
+                            }
+                        }
+                        location.reload(); // Reload to update favorite state
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi',
+                        text: data.message
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error toggling favorite:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: 'Có lỗi xảy ra khi cập nhật yêu thích. Vui lòng thử lại.'
+                });
+            });
+        }
+
+        // Share Book function
+        function shareBook() {
+            const url = window.location.href;
+            const title = document.title;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: title,
+                    url: url
+                });
+            } else {
+                // Fallback: Copy to clipboard
+                navigator.clipboard.writeText(url).then(() => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Đã sao chép!',
+                        text: 'Liên kết đã được sao chép vào clipboard',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                });
+            }
+        }
+
+        // Load Reviews function
+        function loadDanhGia() {
+            const maSach = @Model.MaSach;
+            const danhGiaList = document.getElementById('danhGiaList');
+
+            if (!danhGiaList) return;
+
+            fetch(`/DanhGia/LayDanhGia?maSach=${maSach}`)
+            .then(res => res.json())
+            .then(data => {
+                danhGiaList.innerHTML = '';
+
+                if (data.danhGias.length === 0) {
+                    danhGiaList.innerHTML = `
+                        <div class="no-reviews">
+                            <i class="fas fa-comment-slash"></i>
+                            <h5>Chưa có đánh giá nào</h5>
+                            <p>Hãy là người đầu tiên đánh giá cuốn sách này!</p>
+                        </div>`;
+                } else {
+                    // Update rating summary
+                    const overallRating = document.querySelector('.rating-number');
+                    if (overallRating) {
+                        overallRating.textContent = data.trungBinh;
+                    }
+
+                    data.danhGias.forEach(dg => {
+                        const stars = '⭐'.repeat(dg.soSao);
+                        const reviewElement = document.createElement('div');
+                        reviewElement.className = 'review-item';
+                        reviewElement.innerHTML = `
+                            <div class="review-header">
+                                <div class="reviewer-info">
+                                    <div class="reviewer-avatar">
+                                        <i class="fas fa-user-circle"></i>
+                                    </div>
+                                    <div class="reviewer-details">
+                                        <h6 class="reviewer-name">${dg.tenDangNhap}</h6>
+                                        <div class="review-rating">${stars}</div>
+                                    </div>
+                                </div>
+                                <div class="review-date">
+                                    <i class="far fa-clock"></i>
+                                    ${dg.ngay}
+                                </div>
+                            </div>
+                            <div class="review-content">
+                                <p>${dg.binhLuan}</p>
+                            </div>
+                        `;
+                        danhGiaList.appendChild(reviewElement);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error loading reviews:', error);
+                danhGiaList.innerHTML = `
+                    <div class="error-loading">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Có lỗi khi tải đánh giá. Vui lòng thử lại sau.</p>
+                    </div>`;
+            });
+        }
+    </script>
+}

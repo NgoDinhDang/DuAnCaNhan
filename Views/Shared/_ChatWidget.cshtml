@@ -1,0 +1,660 @@
+@* Chat Widget - Chatbox cho khách hàng *@
+
+<!-- Chat Button -->
+<div id="chatButton" class="chat-button">
+    <i class="fas fa-comments"></i>
+    <span class="chat-badge" id="chatBadge" style="display: none;">0</span>
+</div>
+
+<!-- Chat Window -->
+<div id="chatWindow" class="chat-window" style="display: none;">
+    <div class="chat-header">
+        <h5 class="mb-0">
+            <i class="fas fa-headset"></i> Hỗ trợ khách hàng
+        </h5>
+        <button id="closeChatBtn" class="btn-close-chat">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    
+    <div class="chat-body" id="chatMessages">
+        <div class="welcome-message">
+            <p><strong>Xin chào! 👋</strong></p>
+            <p>Chúng tôi có thể giúp gì cho bạn?</p>
+        </div>
+    </div>
+    
+    <div class="chat-footer">
+        <input type="file" id="imageInput" accept="image/*" style="display: none;" />
+        <button id="uploadImageBtn" class="btn btn-secondary" title="Gửi hình ảnh">
+            <i class="fas fa-image"></i>
+        </button>
+        <input type="text" id="userMessageInput" class="form-control" placeholder="Nhập tin nhắn của bạn..." />
+        <button id="sendMessageBtn" class="btn btn-primary">
+            <i class="fas fa-paper-plane"></i>
+        </button>
+    </div>
+</div>
+
+<style>
+    .chat-button {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+        transition: all 0.3s ease;
+    }
+
+    .chat-button:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    .chat-button i {
+        font-size: 28px;
+    }
+
+    .chat-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background-color: #ff4444;
+        color: white;
+        border-radius: 50%;
+        padding: 4px 8px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .chat-window {
+        position: fixed;
+        bottom: 100px;
+        right: 30px;
+        width: 380px;
+        height: 550px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        z-index: 1001;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        animation: slideUp 0.3s ease;
+    }
+
+    @@keyframes slideUp {
+        from {
+            transform: translateY(20px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .chat-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .btn-close-chat {
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+        padding: 0;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: background 0.2s;
+    }
+
+    .btn-close-chat:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    .chat-body {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        background: #f5f5f5;
+    }
+
+    .chat-body::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .chat-body::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 3px;
+    }
+
+    .welcome-message {
+        text-align: center;
+        color: #666;
+        padding: 20px;
+        background: white;
+        border-radius: 10px;
+        margin-bottom: 15px;
+    }
+
+    .message-wrapper {
+        margin-bottom: 15px;
+        display: flex;
+    }
+
+    .message-wrapper.user {
+        justify-content: flex-end;
+    }
+
+    .message-wrapper.admin {
+        justify-content: flex-start;
+    }
+
+    .message {
+        max-width: 75%;
+        padding: 12px 16px;
+        border-radius: 18px;
+        word-wrap: break-word;
+        animation: fadeIn 0.3s ease;
+    }
+
+    .message.user {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-bottom-right-radius: 4px;
+    }
+
+    .message.admin {
+        background: white;
+        color: #333;
+        border-bottom-left-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .message-time {
+        font-size: 11px;
+        opacity: 0.7;
+        margin-top: 5px;
+        display: block;
+    }
+
+    .message-sender {
+        font-weight: bold;
+        font-size: 12px;
+        margin-bottom: 4px;
+        display: block;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .chat-footer {
+        padding: 15px;
+        background: white;
+        border-top: 1px solid #e0e0e0;
+        display: flex;
+        gap: 10px;
+    }
+
+    .chat-footer input[type="text"] {
+        flex: 1;
+        border: 1px solid #ddd;
+        border-radius: 25px;
+        padding: 10px 15px;
+        outline: none;
+    }
+
+    .chat-footer input[type="text"]:focus {
+        border-color: #667eea;
+    }
+
+    .chat-footer button {
+        width: 45px;
+        height: 45px;
+        border: none;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+    }
+
+    .chat-footer button:hover {
+        transform: scale(1.05);
+    }
+
+    .chat-footer #uploadImageBtn {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+
+    .chat-footer #uploadImageBtn:hover {
+        box-shadow: 0 2px 8px rgba(245, 87, 108, 0.4);
+    }
+
+    .image-preview {
+        max-width: 200px;
+        max-height: 200px;
+        border-radius: 10px;
+        margin: 5px 0;
+        cursor: pointer;
+    }
+
+    .image-preview:hover {
+        opacity: 0.8;
+    }
+
+    @@media (max-width: 480px) {
+        .chat-window {
+            width: calc(100% - 20px);
+            height: calc(100% - 120px);
+            right: 10px;
+            bottom: 80px;
+        }
+    }
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
+<script>
+    (function() {
+        const chatButton = document.getElementById('chatButton');
+        const chatWindow = document.getElementById('chatWindow');
+        const closeChatBtn = document.getElementById('closeChatBtn');
+        const sendMessageBtn = document.getElementById('sendMessageBtn');
+        const userMessageInput = document.getElementById('userMessageInput');
+        const chatMessages = document.getElementById('chatMessages');
+        const uploadImageBtn = document.getElementById('uploadImageBtn');
+        const imageInput = document.getElementById('imageInput');
+        
+        let connection;
+        let userName = "Khách";
+        let maNguoiDung = null;
+        
+        // Check if user is logged in
+        @if (Context.Session.GetString("TenDangNhap") != null)
+        {
+            <text>
+            userName = "@Context.Session.GetString("TenDangNhap")";
+            maNguoiDung = @(Context.Session.GetInt32("MaNguoiDung")?.ToString() ?? "null");
+            </text>
+        }
+
+        // Toggle chat window
+        chatButton.addEventListener('click', function() {
+            if (chatWindow.style.display === 'none') {
+                chatWindow.style.display = 'flex';
+                chatButton.style.display = 'none';
+                
+                if (!connection) {
+                    initializeSignalR();
+                } else {
+                    // Nếu đã kết nối, load lịch sử chat
+                    loadChatHistory();
+                }
+            }
+        });
+
+        closeChatBtn.addEventListener('click', function() {
+            chatWindow.style.display = 'none';
+            chatButton.style.display = 'flex';
+        });
+
+        sendMessageBtn.addEventListener('click', sendMessage);
+        
+        userMessageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Upload image button click
+        uploadImageBtn.addEventListener('click', function() {
+            imageInput.click();
+        });
+
+        // Handle image selection
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                uploadImage(file);
+            }
+        });
+
+        function initializeSignalR() {
+            connection = new signalR.HubConnectionBuilder()
+                .withUrl("/chatHub")
+                .build();
+
+        // Nhận tin nhắn của chính mình
+        connection.on("ReceiveOwnMessage", function(user, message, time) {
+            displayMessage(user, message, time, true);
+        });
+
+        // Nhận tin nhắn từ admin
+        connection.on("ReceiveAdminMessage", function(adminName, message, time) {
+            displayMessage(adminName, message, time, false);
+        });
+
+        // Nhận hình ảnh của chính mình
+        connection.on("ReceiveOwnImage", function(user, imageUrl, time) {
+            displayImage(user, imageUrl, time, true);
+        });
+
+        // Nhận hình ảnh từ admin
+        connection.on("ReceiveAdminImage", function(adminName, imageUrl, time) {
+            displayImage(adminName, imageUrl, time, false);
+        });
+
+            connection.start()
+                .then(function() {
+                    console.log("✅ Khách hàng đã kết nối SignalR. Connection ID:", connection.connectionId);
+                    // Load lịch sử chat sau khi kết nối
+                    loadChatHistory();
+                })
+                .catch(function(err) {
+                    console.error("❌ Lỗi kết nối SignalR:", err.toString());
+                });
+        }
+
+        // Load lịch sử chat từ database
+        function loadChatHistory() {
+            if (!connection) {
+                console.log("⏳ Chờ SignalR connection...");
+                setTimeout(loadChatHistory, 500);
+                return;
+            }
+
+            // Đợi connection sẵn sàng
+            if (connection.state !== signalR.HubConnectionState.Connected) {
+                console.log("⏳ Chờ SignalR kết nối... State:", connection.state);
+                setTimeout(loadChatHistory, 500);
+                return;
+            }
+
+            const connectionId = connection.connectionId;
+            if (!connectionId) {
+                console.log("⏳ Chờ ConnectionId...");
+                setTimeout(loadChatHistory, 500);
+                return;
+            }
+
+            console.log("📜 Đang load lịch sử chat. MaNguoiDung:", maNguoiDung, "ConnectionId:", connectionId);
+
+            // Ưu tiên load theo MaNguoiDung nếu user đã đăng nhập
+            let url = '/Chat/GetChatHistory?limit=100';
+            if (maNguoiDung) {
+                url += `&maNguoiDung=${maNguoiDung}`;
+            } else {
+                url += `&connectionId=${encodeURIComponent(connectionId)}`;
+            }
+
+            fetch(url)
+                .then(response => {
+                    console.log("📡 Response status:", response.status);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("📦 Data received:", data);
+                    if (data.success && data.messages && data.messages.length > 0) {
+                        console.log(`✅ Đã load ${data.messages.length} tin nhắn từ lịch sử`);
+                        
+                        // Xóa welcome message
+                        const welcomeMsg = chatMessages.querySelector('.welcome-message');
+                        if (welcomeMsg) {
+                            welcomeMsg.style.display = 'none';
+                        }
+
+                        // Xóa các tin nhắn cũ (nếu có) để tránh duplicate
+                        const existingMessages = chatMessages.querySelectorAll('.message-wrapper');
+                        existingMessages.forEach(msg => msg.remove());
+
+                        // Hiển thị tất cả tin nhắn từ lịch sử
+                        data.messages.forEach(function(msg) {
+                            console.log("📨 Hiển thị tin nhắn:", msg);
+                            if (msg.messageType === 'image' && msg.imageUrl) {
+                                // Hiển thị hình ảnh
+                                displayImage(
+                                    msg.senderName, 
+                                    msg.imageUrl, 
+                                    msg.sentAt, 
+                                    !msg.isAdminMessage
+                                );
+                            } else {
+                                // Hiển thị tin nhắn text
+                                displayMessage(
+                                    msg.senderName, 
+                                    msg.message, 
+                                    msg.sentAt, 
+                                    !msg.isAdminMessage
+                                );
+                            }
+                        });
+
+                        // Cuộn xuống tin nhắn mới nhất
+                        setTimeout(() => {
+                            chatMessages.scrollTop = chatMessages.scrollHeight;
+                        }, 100);
+                    } else {
+                        console.log("ℹ️ Chưa có lịch sử chat. Data:", data);
+                    }
+                })
+                .catch(function(error) {
+                    console.error("❌ Lỗi load lịch sử chat:", error);
+                    console.error("❌ Error details:", error.message, error.stack);
+                });
+        }
+
+        function sendMessage() {
+            const message = userMessageInput.value.trim();
+            if (message === '') return;
+
+            if (!connection || connection.state !== signalR.HubConnectionState.Connected) {
+                console.error("❌ SignalR chưa kết nối. State:", connection ? connection.state : 'null');
+                alert('Đang kết nối đến hệ thống chat...');
+                return;
+            }
+
+            console.log("📤 Đang gửi tin nhắn:", {userName, message, connectionId: connection.connectionId, maNguoiDung});
+            
+            connection.invoke("SendCustomerMessage", userName, message, connection.connectionId, maNguoiDung)
+                .then(function() {
+                    console.log("✅ Tin nhắn đã được gửi thành công");
+                    userMessageInput.value = '';
+                    // ChatHub đã tự động lưu vào database, không cần gọi saveMessageToDatabase nữa
+                })
+                .catch(function(err) {
+                    console.error("❌ Lỗi khi gửi tin nhắn:", err.toString());
+                    alert('Không thể gửi tin nhắn. Vui lòng thử lại.');
+                });
+        }
+
+        function displayMessage(user, message, time, isCurrentUser) {
+            const messageWrapper = document.createElement('div');
+            messageWrapper.className = `message-wrapper ${isCurrentUser ? 'user' : 'admin'}`;
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isCurrentUser ? 'user' : 'admin'}`;
+            
+            if (!isCurrentUser) {
+                const senderSpan = document.createElement('span');
+                senderSpan.className = 'message-sender';
+                senderSpan.textContent = user;
+                messageDiv.appendChild(senderSpan);
+            }
+            
+            const textDiv = document.createElement('div');
+            textDiv.textContent = message;
+            messageDiv.appendChild(textDiv);
+            
+            const timeSpan = document.createElement('span');
+            timeSpan.className = 'message-time';
+            timeSpan.textContent = time;
+            messageDiv.appendChild(timeSpan);
+            
+            messageWrapper.appendChild(messageDiv);
+            chatMessages.appendChild(messageWrapper);
+            
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function displayImage(user, imageUrl, time, isCurrentUser) {
+            const messageWrapper = document.createElement('div');
+            messageWrapper.className = `message-wrapper ${isCurrentUser ? 'user' : 'admin'}`;
+            
+            messageWrapper.innerHTML = `
+                <div class="message ${isCurrentUser ? 'user-message' : 'admin-message'}">
+                    <div class="message-header">
+                        <strong>${user}</strong>
+                        <span class="message-time">${time}</span>
+                    </div>
+                    <div class="message-content">
+                        <img src="${imageUrl}" class="image-preview" alt="Image" onclick="window.open('${imageUrl}', '_blank')" />
+                    </div>
+                </div>
+            `;
+            
+            chatMessages.appendChild(messageWrapper);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function uploadImage(file) {
+            // Validate file size (5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                alert('Kích thước file không được vượt quá 5MB!');
+                return;
+            }
+
+            // Validate file type
+            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+            if (!allowedTypes.includes(file.type)) {
+                alert('Chỉ chấp nhận file ảnh (JPG, PNG, GIF, WEBP)!');
+                return;
+            }
+
+            // Show loading
+            const loadingMsg = document.createElement('div');
+            loadingMsg.className = 'message-wrapper user';
+            loadingMsg.innerHTML = `
+                <div class="message user-message">
+                    <div class="message-content">
+                        <i class="fas fa-spinner fa-spin"></i> Đang tải ảnh lên...
+                    </div>
+                </div>
+            `;
+            chatMessages.appendChild(loadingMsg);
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('senderName', userName);
+            formData.append('connectionId', connection.connectionId);
+            formData.append('isAdminMessage', false);
+            formData.append('maNguoiDung', @(Context.Session.GetInt32("MaNguoiDung")?.ToString() ?? "null"));
+
+            fetch('/Chat/UploadChatImage', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        throw new Error(err.error || 'Upload thất bại');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Remove loading message
+                loadingMsg.remove();
+
+                if (data.success) {
+                    // Send image via SignalR
+                    connection.invoke("SendCustomerImage", userName, data.imageUrl, connection.connectionId)
+                        .then(() => {
+                            console.log('✅ Đã gửi hình ảnh');
+                        })
+                        .catch(err => {
+                            console.error('❌ Lỗi gửi hình ảnh:', err);
+                        });
+                } else {
+                    alert(data.error || 'Upload thất bại');
+                }
+
+                // Reset input
+                imageInput.value = '';
+            })
+            .catch(error => {
+                loadingMsg.remove();
+                console.error('❌ Error uploading image:', error);
+                alert('Lỗi: ' + error.message);
+                imageInput.value = '';
+            });
+        }
+
+        function saveMessageToDatabase(senderName, message, connectionId, isAdminMessage) {
+            fetch('/Chat/SaveMessage', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    senderName: senderName,
+                    message: message,
+                    connectionId: connectionId,
+                    isAdminMessage: isAdminMessage,
+                    maNguoiDung: @(Context.Session.GetInt32("MaNguoiDung")?.ToString() ?? "null")
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        console.error('❌ Lỗi lưu tin nhắn:', err);
+                        throw new Error(err.error || 'Không thể lưu tin nhắn');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    console.log('✅ Đã lưu tin nhắn vào database. ID:', data.id);
+                }
+            })
+            .catch(error => {
+                console.error('❌ Error saving message:', error);
+            });
+        }
+    })();
+</script>
+

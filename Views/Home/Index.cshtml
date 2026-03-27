@@ -1,0 +1,479 @@
+﻿@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+@{
+    ViewData["Title"] = "STOREBOOKS - CỬA HÀNG SÁCH TRỰC TUYẾN";
+    var sachGiamGia = ViewBag.SachGiamGia as List<STOREBOOKS.Models.Sach>;
+    var sachNoiBat = ViewBag.SachNoiBat as List<STOREBOOKS.Models.Sach>;
+    var danhSachYeuThich = ViewBag.ListYeuThich as List<int> ?? new List<int>();
+}
+
+<!-- Hero Section -->
+<section class="hero-section position-relative overflow-hidden">
+    <div class="hero-background">
+        <div class="hero-gradient-overlay"></div>
+        <div class="hero-pattern"></div>
+    </div>
+
+    <div class="container position-relative">
+        <div class="row align-items-center min-vh-75">
+            <div class="col-lg-6 hero-content">
+                <div class="hero-badge mb-3">
+                    <span class="badge-modern">
+                        <i class="fas fa-star me-1"></i>
+                        CỬA HÀNG SÁCH HÀNG ĐẦU VIỆT NAM
+                    </span>
+                </div>
+
+                <h1 class="hero-title">
+                    Khám phá thế giới
+                    <span class="text-gradient">tri thức</span>
+                    <br>
+                    cùng STOREBOOKS
+                </h1>
+
+                <p class="hero-subtitle">
+                    Hàng ngàn cuốn sách từ mọi thể loại, được tuyển chọn kỹ lưỡng
+                    với giá cả phải chăng. Đọc sách để thay đổi cuộc sống của bạn!
+                </p>
+
+                <div class="hero-stats d-flex gap-4 mb-4">
+                    <div class="stat-item">
+                        <div class="stat-number">10,000+</div>
+                        <div class="stat-label">Cuốn sách</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">5,000+</div>
+                        <div class="stat-label">Khách hàng</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">50+</div>
+                        <div class="stat-label">Danh mục</div>
+                    </div>
+                </div>
+
+                <div class="hero-actions">
+                    <a href="@Url.Action("Index", "Books")" class="btn btn-primary-modern btn-lg me-3 mb-2">
+                        <i class="fas fa-book-open me-2"></i>
+                        Khám phá sách
+                    </a>
+                    @if (!(ViewBag.IsLoggedIn ?? false))
+                    {
+                        <a href="@Url.Action("Register", "Account")" class="btn btn-outline-modern btn-lg mb-2">
+                            <i class="fas fa-user-plus me-2"></i>
+                            Đăng ký ngay
+                        </a>
+                    }
+                </div>
+            </div>
+
+            <div class="col-lg-6 hero-visual">
+                <div class="hero-books-stack">
+                    <div class="book-card book-1">
+                        <img src="~/images/book-placeholder-1.jpg" alt="Sách nổi bật" class="img-fluid rounded-3 shadow-lg">
+                        <div class="book-overlay">
+                            <i class="fas fa-heart text-danger"></i>
+                        </div>
+                    </div>
+                    <div class="book-card book-2">
+                        <img src="~/images/book-placeholder-2.jpg" alt="Sách khuyến mãi" class="img-fluid rounded-3 shadow-lg">
+                        <div class="book-badge">-30%</div>
+                    </div>
+                    <div class="book-card book-3">
+                        <img src="~/images/book-placeholder-3.jpg" alt="Sách bán chạy" class="img-fluid rounded-3 shadow-lg">
+                        <div class="book-rating">
+                            <i class="fas fa-star text-warning"></i>
+                            <span class="ms-1">4.8</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Elements -->
+    <div class="floating-elements">
+        <div class="floating-item item-1">
+            <i class="fas fa-book"></i>
+        </div>
+        <div class="floating-item item-2">
+            <i class="fas fa-heart"></i>
+        </div>
+        <div class="floating-item item-3">
+            <i class="fas fa-star"></i>
+        </div>
+        <div class="floating-item item-4">
+            <i class="fas fa-graduation-cap"></i>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4 text-center">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <h5>Miễn phí vận chuyển</h5>
+                    <p>Giao hàng tận nơi trong 24h</p>
+                </div>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h5>Bảo đảm chất lượng</h5>
+                    <p>Sách chính hãng 100%</p>
+                </div>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h5>Hỗ trợ 24/7</h5>
+                    <p>Tư vấn tận tình mọi lúc</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Books Carousel -->
+@if (sachGiamGia != null && sachGiamGia.Any())
+{
+<section class="featured-books-section py-5">
+    <div class="container">
+        <div class="section-header text-center mb-5">
+            <h2 class="section-title">
+                <i class="fas fa-fire text-warning me-2"></i>
+                ƯU ĐÃI HÔM NAY
+            </h2>
+            <p class="section-subtitle">Giảm giá lên đến 50% cho những cuốn sách hay nhất</p>
+        </div>
+
+        <div class="books-carousel">
+            <div class="row">
+                @foreach (var item in sachGiamGia.Take(4))
+                {
+                    var giaSauGiam = item.Gia - (item.Gia * (decimal)(item.GiamGia ?? 0) / 100);
+                    <div class="col-lg-3 col-md-6 mb-4">
+                        <div class="book-card-modern">
+                            <div class="book-image-container">
+                                <img src="@Url.Content("~/images/" + item.HinhAnh)" class="book-image" alt="@item.TenSach">
+                                <div class="book-overlay">
+                                    <div class="book-actions">
+                                        <button class="btn-favorite" onclick="toggleYeuThich(@item.MaSach)">
+                                            <i class="fas fa-heart @(danhSachYeuThich.Contains(item.MaSach) ? "active" : "")"></i>
+                                        </button>
+                                        <button class="btn-quick-view" onclick="quickView(@item.MaSach)">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                    <div class="discount-badge">---@item.GiamGia%</div>
+                                </div>
+                            </div>
+                            <div class="book-info">
+                                <h6 class="book-title">@item.TenSach</h6>
+                                <p class="book-author">@item.TacGia</p>
+                                <div class="book-price">
+                                    <span class="current-price">@giaSauGiam.ToString("N0")đ</span>
+                                    <span class="original-price">@item.Gia.ToString("N0")đ</span>
+                                </div>
+                                <div class="book-rating mb-2">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star-half-alt text-warning"></i>
+                                    <span class="rating-text ms-1">4.5 (120)</span>
+                                </div>
+                                @if (ViewBag.IsLoggedIn == true)
+                                {
+                                    <button class="btn btn-primary-modern btn-sm w-100" onclick="addToCart(@item.MaSach)">
+                                        <i class="fas fa-cart-plus me-1"></i> Thêm vào giỏ
+                                    </button>
+                                }
+                                <a href="@Url.Action("Details", "Books", new { id = item.MaSach })" class="btn btn-outline-modern btn-sm w-100 mt-1">
+                                    <i class="fas fa-info-circle me-1"></i> Chi tiết
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="@Url.Action("Index", "Books")#sectionGiamGia" class="btn btn-outline-primary-modern">
+                Xem tất cả ưu đãi <i class="fas fa-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </div>
+</section>
+}
+
+<!-- Best Sellers Section -->
+@if (sachNoiBat != null && sachNoiBat.Any())
+{
+<section class="bestsellers-section py-5 bg-light">
+    <div class="container">
+        <div class="section-header text-center mb-5">
+            <h2 class="section-title">
+                <i class="fas fa-chart-line text-success me-2"></i>
+                SÁCH BÁN CHẠY NHẤT
+            </h2>
+            <p class="section-subtitle">Những cuốn sách được yêu thích nhất tháng này</p>
+        </div>
+
+        <div class="books-grid">
+            <div class="row">
+                @foreach (var item in sachNoiBat.Take(6))
+                {
+                    var giaBan = item.GiamGia > 0 ? item.Gia - (item.Gia * (decimal)(item.GiamGia ?? 0) / 100) : item.Gia;
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="book-card-modern bestseller-card">
+                            <div class="book-image-container">
+                                <img src="@Url.Content("~/images/" + item.HinhAnh)" class="book-image" alt="@item.TenSach">
+                                <div class="book-overlay">
+                                    <div class="book-actions">
+                                        <button class="btn-favorite" onclick="toggleYeuThich(@item.MaSach)">
+                                            <i class="fas fa-heart @(danhSachYeuThich.Contains(item.MaSach) ? "active" : "")"></i>
+                                        </button>
+                                        <button class="btn-quick-view" onclick="quickView(@item.MaSach)">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                    @if (item.GiamGia > 0)
+                                    {
+                                        <div class="discount-badge">---@item.GiamGia%</div>
+                                    }
+                                    <div class="bestseller-badge">
+                                        <i class="fas fa-crown"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="book-info">
+                                <h6 class="book-title">@item.TenSach</h6>
+                                <p class="book-author">@item.TacGia</p>
+                                <div class="book-price">
+                                    <span class="current-price">@giaBan.ToString("N0")đ</span>
+                                    @if (item.GiamGia > 0)
+                                    {
+                                        <span class="original-price">@item.Gia.ToString("N0")đ</span>
+                                    }
+                                </div>
+                                <div class="book-rating mb-2">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <span class="rating-text ms-1">5.0 (250)</span>
+                                </div>
+                                @if (ViewBag.IsLoggedIn == true)
+                                {
+                                    <button class="btn btn-success-modern btn-sm w-100" onclick="addToCart(@item.MaSach)">
+                                        <i class="fas fa-cart-plus me-1"></i> Thêm vào giỏ
+                                    </button>
+                                }
+                                <a href="@Url.Action("Details", "Books", new { id = item.MaSach })" class="btn btn-outline-modern btn-sm w-100 mt-1">
+                                    <i class="fas fa-info-circle me-1"></i> Chi tiết
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="@Url.Action("Index", "Books")#sectionNoiBat" class="btn btn-outline-success-modern">
+                Xem tất cả sách bán chạy <i class="fas fa-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </div>
+</section>
+}
+
+<!-- Categories Preview -->
+<section class="categories-section py-5">
+    <div class="container">
+        <div class="section-header text-center mb-5">
+            <h2 class="section-title">
+                <i class="fas fa-th-large text-primary me-2"></i>
+                DANH MỤC SÁCH
+            </h2>
+            <p class="section-subtitle">Khám phá sách theo chủ đề yêu thích của bạn</p>
+        </div>
+
+        <div class="categories-grid">
+            <div class="row g-4">
+                @if (ViewBag.DanhMuc is List<STOREBOOKS.Models.DanhMuc> danhMucs && danhMucs.Any())
+                {
+                    @foreach (var dm in danhMucs.Take(6))
+                    {
+                        <div class="col-lg-4 col-md-6">
+                            <a href="@Url.Action("Index", "Books", new { maDanhMuc = dm.MaDanhMuc })" class="category-card">
+                                <div class="category-icon">
+                                    <i class="fas fa-book"></i>
+                                </div>
+                                <h5>@dm.TenDanhMuc</h5>
+                                <p>Khám phá ngay</p>
+                                <div class="category-arrow">
+                                    <i class="fas fa-arrow-right"></i>
+                                </div>
+                            </a>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="@Url.Action("Index", "Books")" class="btn btn-outline-primary-modern">
+                Xem tất cả danh mục <i class="fas fa-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="newsletter-section py-5 bg-gradient-primary text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h3 class="newsletter-title">Đăng ký nhận tin khuyến mãi</h3>
+                <p class="newsletter-subtitle">Nhận thông tin về sách mới và ưu đãi đặc biệt qua email</p>
+            </div>
+            <div class="col-lg-4">
+                <form class="newsletter-form">
+                    <div class="input-group">
+                        <input type="email" class="form-control form-control-lg" placeholder="Nhập email của bạn" required>
+                        <button class="btn btn-light btn-lg" type="submit">
+                            <i class="fas fa-paper-plane me-1"></i> Đăng ký
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Add to Cart function
+        function addToCart(id) {
+            fetch(`/Cart/AddToCart/${id}`, {
+                method: 'POST',
+                headers: {
+                    'RequestVerificationToken': '@Antiforgery.GetAndStoreTokens(Context).RequestToken',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                Swal.fire({
+                    icon: data.success ? 'success' : 'error',
+                    title: data.success ? 'Đã thêm vào giỏ!' : 'Lỗi!',
+                    text: data.message || '',
+                    timer: 2000,
+                    showConfirmButton: false,
+                    customClass: {
+                        popup: 'swal2-responsive'
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error adding to cart:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: 'Có lỗi xảy ra khi thêm vào giỏ hàng. Vui lòng thử lại.'
+                });
+            });
+        }
+
+        // Toggle Favorite function
+        function toggleYeuThich(id) {
+            fetch(`/YeuThich/Toggle/${id}`, {
+                method: 'POST',
+                headers: {
+                    'RequestVerificationToken': '@Antiforgery.GetAndStoreTokens(Context).RequestToken',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: data.message,
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        location.reload(); // Tải lại trang để cập nhật trạng thái icon
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi',
+                        text: data.message
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error toggling favorite:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: 'Có lỗi xảy ra khi cập nhật yêu thích. Vui lòng thử lại.'
+                });
+            });
+        }
+
+        // Quick view function (placeholder)
+        function quickView(id) {
+            // This would open a modal with book details
+            window.location.href = `/Books/Details/${id}`;
+        }
+
+        // Newsletter form submission
+        document.querySelector('.newsletter-form')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = this.querySelector('input[type="email"]').value;
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Đăng ký thành công!',
+                text: 'Cảm ơn bạn đã đăng ký. Chúng tôi sẽ gửi thông tin khuyến mãi đến email của bạn.',
+                timer: 3000,
+                showConfirmButton: false
+            });
+
+            this.reset();
+        });
+
+        // Animate elements on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all sections
+        document.querySelectorAll('.featured-books-section, .bestsellers-section, .categories-section, .newsletter-section').forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+}

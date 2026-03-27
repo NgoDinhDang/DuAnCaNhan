@@ -1,0 +1,111 @@
+﻿@model List<STOREBOOKS.Models.YeuThich>
+
+@{
+    ViewData["Title"] = "Sách yêu thích của tôi";
+}
+
+<div class="container mt-4">
+    <h2 class="text-primary mb-4">📚 Sách yêu thích của tôi</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">Bạn chưa thêm sách nào vào danh sách yêu thích.</div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-4 g-4">
+            @foreach (var item in Model)
+            {
+                var sach = item.Sach;
+                var giamGia = sach.GiamGia ?? 0;
+                var giaGoc = sach.Gia;
+                var giaSauGiam = giaGoc * (1 - (decimal)giamGia / 100);
+
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        @if (!string.IsNullOrEmpty(sach.HinhAnh))
+                        {
+                            <img src="~/images/@sach.HinhAnh" class="card-img-top" alt="@sach.TenSach" style="height: 250px; object-fit: cover;" />
+                        }
+                        else
+                        {
+                            <div class="bg-light d-flex align-items-center justify-content-center" style="height: 250px;">
+                                <span class="text-muted">Không có hình ảnh</span>
+                            </div>
+                        }
+
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">@sach.TenSach</h5>
+                            <p class="card-text">
+                                @if (giamGia > 0)
+                                {
+                                    <span class="text-muted text-decoration-line-through">@giaGoc.ToString("N0") đ</span>
+                                    <br />
+                                    <span class="text-danger fw-bold">@giaSauGiam.ToString("N0") đ</span>
+                                    <span class="badge bg-success ms-2">-@giamGia%</span>
+                                }
+                                else
+                                {
+                                    <span class="text-danger fw-bold">@giaGoc.ToString("N0") đ</span>
+                                }
+                            </p>
+
+                            <div class="mt-auto d-flex justify-content-between">
+                                <a asp-controller="Books" asp-action="Details" asp-route-id="@sach.MaSach" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-eye"></i> Xem
+                                </a>
+
+                                <button onclick="xoaYeuThich(@item.Id)" class="btn btn-sm btn-outline-danger">
+                                    <i class="fas fa-trash-alt"></i> Xóa
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<!-- Hidden form to provide AntiForgeryToken -->
+<form id="antiForgeryForm" method="post" asp-controller="YeuThich" asp-action="Xoa">
+    @Html.AntiForgeryToken()
+</form>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function xoaYeuThich(id) {
+            Swal.fire({
+                title: "Xác nhận?",
+                text: "Bạn có chắc muốn xóa khỏi danh sách yêu thích?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Xóa",
+                cancelButtonText: "Hủy"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const token = document.querySelector('#antiForgeryForm input[name="__RequestVerificationToken"]').value;
+
+                    fetch('/YeuThich/Xoa', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': token
+                        },
+                        body: JSON.stringify(id) // chỉ gửi số thôi, không cần { id: id }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire('Thành công', 'Đã xóa khỏi yêu thích', 'success')
+                                .then(() => location.reload());
+                        } else {
+                            Swal.fire('Lỗi', 'Không thể xóa mục yêu thích', 'error');
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+}

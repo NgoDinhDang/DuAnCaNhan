@@ -1,0 +1,42 @@
+﻿@model STOREBOOKS.Models.Order
+@{
+    ViewData["Title"] = "Chi tiết đơn hàng";
+}
+
+<h2 class="text-primary mb-4">Chi tiết đơn hàng #@Model.OrderId</h2>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <p><strong>Khách hàng:</strong> @Model.TenKhachHang</p>
+        <p><strong>Email:</strong> @Model.Email</p>
+        <p><strong>SĐT:</strong> @Model.SoDienThoai</p>
+        <p><strong>Địa chỉ:</strong> @Model.DiaChiGiaoHang</p>
+        <p><strong>Ngày đặt:</strong> @Model.NgayDat.ToString("dd/MM/yyyy HH:mm")</p>
+        <p><strong>Trạng thái:</strong> <span class="badge bg-warning">@Model.TrangThai</span></p>
+    </div>
+</div>
+
+<h4>Danh sách sản phẩm</h4>
+<table class="table table-bordered table-hover">
+    <thead class="table-light">
+        <tr>
+            <th>Sách</th>
+            <th>Số lượng</th>
+            <th>Đơn giá</th>
+            <th>Thành tiền</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.OrderDetails)
+        {
+            <tr>
+                <td>@item.Sach?.TenSach</td>
+                <td>@item.SoLuong</td>
+                <td>@item.Gia.ToString("N0") đ</td>
+                <td>@(item.Gia * item.SoLuong).ToString("N0") đ</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Index" class="btn btn-secondary">Quay lại</a>

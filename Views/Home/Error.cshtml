@@ -1,0 +1,11 @@
+﻿@{
+    ViewData["Title"] = "Lỗi";
+}
+
+<div class="container">
+    <h2 class="my-4"><i class="fas fa-exclamation-triangle"></i> Đã xảy ra lỗi</h2>
+    <div class="alert alert-danger" role="alert">
+        Có lỗi xảy ra. Vui lòng thử lại sau.
+    </div>
+    <a href="@Url.Action("Index", "Books")" class="btn btn-primary"><i class="fas fa-arrow-left"></i> Quay lại</a>
+</div>

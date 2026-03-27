@@ -1,0 +1,425 @@
+@model STOREBOOKS.ViewModels.PaymentAdminIndexViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Quản lý thanh toán";
+    var filters = Model.Filters;
+
+    string GetStatusBadge(string status) => status switch
+    {
+        "Success" => "bg-success",
+        "Pending" => "bg-warning text-dark",
+        "Failed" => "bg-danger",
+        "Cancelled" => "bg-secondary",
+        _ => "bg-light text-dark"
+    };
+
+    string GetMethodClass(string? method) => (method ?? string.Empty).ToLower() switch
+    {
+        "momo" => "method-momo",
+        "cod" => "method-cod",
+        "vnpay" => "method-vnpay",
+        _ => "method-default"
+    };
+}
+
+<div class="admin-page-header">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="admin-page-title">
+                <i class="fas fa-credit-card me-2"></i>
+                Quản lý thanh toán
+            </h2>
+            <p class="admin-page-subtitle">Theo dõi và cập nhật trạng thái giao dịch</p>
+        </div>
+    </div>
+</div>
+
+<partial name="_AdminNav" />
+
+<div class="payment-dashboard">
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success shadow-sm">@TempData["Message"]</div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger shadow-sm">@TempData["Error"]</div>
+    }
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100 payment-summary-card">
+                <div class="card-body">
+                    <p class="text-muted mb-1">Tổng giao dịch</p>
+                    <h4 class="fw-bold">@Model.Summary.TotalPayments</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100 payment-summary-card">
+                <div class="card-body">
+                    <p class="text-muted mb-1">Thành công</p>
+                    <h4 class="fw-bold text-success">@Model.Summary.SuccessCount</h4>
+                    <small class="text-muted">Doanh thu: @Model.Summary.SuccessAmount.ToString("N0") đ</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100 payment-summary-card">
+                <div class="card-body">
+                    <p class="text-muted mb-1">Đang chờ</p>
+                    <h4 class="fw-bold text-warning">@Model.Summary.PendingCount</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100 payment-summary-card">
+                <div class="card-body">
+                    <p class="text-muted mb-1">Thất bại / Hủy</p>
+                    <h4 class="fw-bold text-danger">@Model.Summary.FailedCount</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-4 filter-form-card">
+        <div class="card-body">
+            <form method="get" class="row g-3 align-items-end filter-form">
+                <div class="col-md-2">
+                    <label class="form-label">Trạng thái</label>
+                    <select class="form-select" name="status">
+                        <option value="all" selected="@(filters.Status == "all" ? "selected" : null)">Tất cả</option>
+                        @foreach (var status in Model.AvailableStatuses)
+                        {
+                            <option value="@status" selected="@(filters.Status == status ? "selected" : null)">@status</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Phương thức</label>
+                    <select class="form-select" name="method">
+                        <option value="all" selected="@(filters.Method == "all" ? "selected" : null)">Tất cả</option>
+                        @foreach (var method in Model.AvailableMethods)
+                        {
+                            <option value="@method" selected="@(filters.Method == method ? "selected" : null)">@method</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Từ ngày</label>
+                    <input type="date" class="form-control" name="fromDate" value="@(filters.FromDate?.ToString("yyyy-MM-dd"))" />
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Đến ngày</label>
+                    <input type="date" class="form-control" name="toDate" value="@(filters.ToDate?.ToString("yyyy-MM-dd"))" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Từ khóa</label>
+                    <input type="text" class="form-control" placeholder="Mã đơn, giao dịch, khách hàng..." name="keyword" value="@filters.Keyword" />
+                </div>
+                <div class="col-md-1 d-grid">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-funnel"></i>
+                    </button>
+                </div>
+                @if (filters.HasFilters)
+                {
+                    <div class="col-12">
+                        <a asp-area="Admin" asp-controller="AdminPayment" asp-action="Index" class="btn btn-link text-decoration-none">
+                            <i class="bi bi-x-circle"></i> Xóa bộ lọc
+                        </a>
+                    </div>
+                }
+            </form>
+
+            @if (filters.HasFilters)
+            {
+                <div class="active-filters mt-3">
+                    <span class="fw-semibold text-muted me-2">Đang áp dụng:</span>
+                    <div class="d-flex flex-wrap gap-2">
+                        @if (!string.IsNullOrWhiteSpace(filters.Status) && filters.Status != "all")
+                        {
+                            <span class="badge filter-badge">
+                                <i class="bi bi-info-circle me-1"></i>Trạng thái: @filters.Status
+                            </span>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(filters.Method) && filters.Method != "all")
+                        {
+                            <span class="badge filter-badge">
+                                <i class="bi bi-credit-card me-1"></i>Phương thức: @filters.Method
+                            </span>
+                        }
+                        @if (filters.FromDate.HasValue)
+                        {
+                            <span class="badge filter-badge">
+                                <i class="bi bi-calendar-event me-1"></i>Từ: @filters.FromDate.Value.ToString("dd/MM/yyyy")
+                            </span>
+                        }
+                        @if (filters.ToDate.HasValue)
+                        {
+                            <span class="badge filter-badge">
+                                <i class="bi bi-calendar-event me-1"></i>Đến: @filters.ToDate.Value.ToString("dd/MM/yyyy")
+                            </span>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(filters.Keyword))
+                        {
+                            <span class="badge filter-badge">
+                                <i class="bi bi-search me-1"></i>Từ khóa: @filters.Keyword
+                            </span>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="card shadow-lg border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0 payment-table">
+                    <thead class="bg-dark text-white">
+                        <tr>
+                            <th>#</th>
+                            <th>Đơn hàng</th>
+                            <th>Khách hàng</th>
+                            <th>Phương thức</th>
+                            <th>Số tiền</th>
+                            <th>Trạng thái</th>
+                            <th>Thời gian tạo</th>
+                            <th>Mã giao dịch</th>
+                            <th width="220">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Payments.Any())
+                        {
+                            foreach (var item in Model.Payments)
+                            {
+                                var methodClass = GetMethodClass(item.PaymentMethod);
+                                <tr>
+                                    <td class="fw-bold">#@item.PaymentId</td>
+                                    <td>
+                                        <div class="fw-semibold">Đơn #@item.OrderId</div>
+                                        <small class="text-muted">@item.Payment.PaymentInfo</small>
+                                    </td>
+                                    <td>
+                                        <div>@item.CustomerName</div>
+                                        <small class="text-muted">@item.Payment?.Order?.Email</small>
+                                    </td>
+                                    <td>
+                                        <span class="badge payment-method-badge @methodClass">@item.PaymentMethod</span>
+                                    </td>
+                                    <td class="fw-bold text-success">
+                                        @item.Amount.ToString("N0") đ
+                                    </td>
+                                    <td>
+                                        <span class="badge @GetStatusBadge(item.Status) status-pill">@item.Status</span>
+                                    </td>
+                                    <td>
+                                        <div>@item.CreatedAt.ToString("dd/MM/yyyy HH:mm")</div>
+                                        @if (item.PaymentDate.HasValue)
+                                        {
+                                            <small class="text-muted">Thanh toán: @item.PaymentDate.Value.ToString("dd/MM HH:mm")</small>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (!string.IsNullOrWhiteSpace(item.TransactionId))
+                                        {
+                                            <span class="text-nowrap">@item.TransactionId</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">—</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column gap-2 payment-actions">
+                                            <a class="btn btn-sm btn-outline-info btn-soft" asp-area="Admin" asp-controller="AdminPayment" asp-action="Details" asp-route-id="@item.PaymentId">
+                                                <i class="bi bi-eye"></i> Chi tiết
+                                            </a>
+                                            <form asp-area="Admin" asp-controller="AdminPayment" asp-action="UpdateStatus" method="post" class="d-flex gap-2 align-items-center">
+                                                <input type="hidden" name="id" value="@item.PaymentId" />
+                                                <input type="hidden" name="returnStatus" value="@filters.Status" />
+                                                <input type="hidden" name="returnMethod" value="@filters.Method" />
+                                                <input type="hidden" name="keyword" value="@filters.Keyword" />
+                                                <input type="hidden" name="fromDate" value="@filters.FromDate?.ToString("yyyy-MM-dd")" />
+                                                <input type="hidden" name="toDate" value="@filters.ToDate?.ToString("yyyy-MM-dd")" />
+                                                <select name="status" class="form-select form-select-sm">
+                                                    @foreach (var status in Model.AvailableStatuses)
+                                                    {
+                                                        <option value="@status" selected="@(item.Status == status ? "selected" : null)">@status</option>
+                                                    }
+                                                </select>
+                                                <button type="submit" class="btn btn-sm btn-primary btn-soft">
+                                                    <i class="bi bi-save"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="9" class="text-center py-5">
+                                    <i class="bi bi-credit-card fs-1 text-muted d-block mb-3"></i>
+                                    <p class="mb-0">Không có giao dịch phù hợp.</p>
+                                    <small class="text-muted">Hãy điều chỉnh bộ lọc hoặc thử lại sau.</small>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-meta">
+                Hiển thị <strong>@Model.Payments.Count</strong> giao dịch · Thành công: <strong>@Model.Summary.SuccessCount</strong> · Đang chờ: <strong>@Model.Summary.PendingCount</strong>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .payment-dashboard {
+            background: linear-gradient(135deg, #f7f9ff 0%, #ffffff 50%, #f8fbff 100%);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 0 30px 60px rgba(15, 23, 42, 0.08);
+            border: 1px solid rgba(99, 102, 241, 0.08);
+        }
+
+        .payment-summary-card {
+            border-radius: 18px;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            background: #fff;
+        }
+
+        .payment-summary-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 35px rgba(79, 70, 229, 0.12);
+        }
+
+        .filter-form-card {
+            border-radius: 20px;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .active-filters {
+            border-top: 1px dashed rgba(226, 232, 240, 0.9);
+            padding-top: 1rem;
+        }
+
+        .filter-badge {
+            background: rgba(99, 102, 241, 0.1);
+            color: #4338ca;
+            border-radius: 999px;
+            padding: 0.35rem 0.9rem;
+            font-weight: 600;
+        }
+
+        .filter-form .form-label {
+            font-weight: 600;
+            color: #475467;
+        }
+
+        .filter-form .form-control,
+        .filter-form .form-select {
+            border-radius: 12px;
+            border: 1px solid rgba(209, 213, 219, 0.9);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .filter-form .form-control:focus,
+        .filter-form .form-select:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.15);
+        }
+
+        .btn-soft {
+            border-radius: 12px;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .btn-soft:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px rgba(99, 102, 241, 0.2);
+        }
+
+        .payment-table thead {
+            background: linear-gradient(90deg, #1e1b4b, #312e81);
+        }
+
+        .payment-table thead th {
+            letter-spacing: 0.04em;
+            font-size: 0.85rem;
+        }
+
+        .payment-table tbody tr {
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+
+        .payment-table tbody tr:hover {
+            background: rgba(99, 102, 241, 0.08);
+            transform: scale(1.002);
+        }
+
+        .status-pill {
+            border-radius: 999px;
+            padding: 0.4rem 0.9rem;
+            font-weight: 600;
+        }
+
+        .payment-method-badge {
+            border-radius: 999px;
+            padding: 0.35rem 0.9rem;
+            font-weight: 600;
+        }
+
+        .payment-method-badge.method-momo {
+            background: rgba(219, 39, 119, 0.15);
+            color: #be185d;
+        }
+
+        .payment-method-badge.method-cod {
+            background: rgba(16, 185, 129, 0.15);
+            color: #047857;
+        }
+
+        .payment-method-badge.method-vnpay {
+            background: rgba(59, 130, 246, 0.15);
+            color: #1d4ed8;
+        }
+
+        .payment-method-badge.method-default {
+            background: rgba(15, 23, 42, 0.12);
+            color: #0f172a;
+        }
+
+        .payment-actions select {
+            border-radius: 10px;
+        }
+
+        .table-meta {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid rgba(226, 232, 240, 0.9);
+            font-size: 0.95rem;
+            color: #475467;
+            background: rgba(248, 250, 252, 0.8);
+        }
+
+        @@media (max-width: 992px) {
+            .payment-dashboard {
+                padding: 1.25rem;
+            }
+
+            .payment-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+}

@@ -1,0 +1,66 @@
+﻿@model List<STOREBOOKS.Models.Order>
+@{
+    ViewData["Title"] = "Quản lý đơn hàng";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-primary fw-bold">📦 Danh sách đơn hàng</h2>
+    <a class="btn btn-success shadow-sm">
+        <i class="bi bi-plus-circle"></i> Thêm đơn hàng
+    </a>
+</div>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success shadow-sm">@TempData["Message"]</div>
+}
+
+<div class="card shadow-lg border-0 rounded-3">
+    <div class="card-body p-0">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="bg-dark text-white">
+                <tr>
+                    <th width="70">Mã</th>
+                    <th>Khách hàng</th>
+                    <th width="170">Ngày đặt</th>
+                    <th width="150">Trạng thái</th>
+                    <th width="150">Tổng tiền</th>
+                    <th width="180">Thao tác</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var order in Model)
+                {
+                    string badgeColor = order.TrangThai switch
+                    {
+                        "Đang xử lý" => "bg-warning text-dark",
+                        "Đang giao" => "bg-info text-dark",
+                        "Hoàn thành" => "bg-success",
+                        "Đã hủy" => "bg-danger",
+                        _ => "bg-secondary"
+                    };
+
+                    <tr>
+                        <td class="fw-bold">#@order.OrderId</td>
+                        <td>@order.TenKhachHang</td>
+                        <td>@order.NgayDat.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td><span class="badge @badgeColor p-2">@order.TrangThai</span></td>
+                        <td class="fw-bold text-success">@order.TongTien.ToString("N0") đ</td>
+                        <td>
+                            <a class="btn btn-sm btn-outline-info me-1"
+                               asp-action="Details" asp-route-id="@order.OrderId">
+                                <i class="bi bi-eye"></i> Xem
+                            </a>
+
+                            <a class="btn btn-sm btn-outline-primary"
+                               asp-action="CapNhatTrangThai" asp-route-id="@order.OrderId">
+                                <i class="bi bi-pencil-square"></i> Sửa
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

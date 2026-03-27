@@ -1,0 +1,325 @@
+﻿@using System.Text.Json
+@{
+    ViewData["Title"] = "Đăng nhập";
+    var resetSuccessMessage = TempData["ResetSuccess"] as string;
+    var thongBaoMessage = TempData["ThongBao"] as string;
+    var errorMessage = ViewBag.Error?.ToString();
+    var serverException = ViewBag.ServerException?.ToString();
+}
+
+<!-- Auth Container with Modern Design -->
+<div class="auth-page-container">
+    <!-- Background with animated elements -->
+    <div class="auth-background animated-gradient"></div>
+
+    <div class="auth-content-wrapper">
+        <!-- Left side - Branding -->
+        <div class="auth-left-panel">
+            <div class="brand-content">
+                <div class="brand-logo">
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <h1 class="brand-title">STOREBOOKS</h1>
+                <p class="brand-subtitle">Nơi tri thức gặp gỡ đam mê</p>
+
+                <div class="brand-features">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-shipping-fast"></i>
+                        </div>
+                        <div class="feature-text">
+                            <h5>Giao hàng nhanh</h5>
+                            <p>Toàn quốc 24h</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="feature-text">
+                            <h5>Thanh toán an toàn</h5>
+                            <p>Bảo mật tuyệt đối</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <div class="feature-text">
+                            <h5>Hỗ trợ 24/7</h5>
+                            <p>Tư vấn chuyên nghiệp</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="brand-stats">
+                    <div class="stat">
+                        <span class="stat-number">10K+</span>
+                        <span class="stat-label">Sách</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">5K+</span>
+                        <span class="stat-label">Khách hàng</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">4.9</span>
+                        <span class="stat-label">Đánh giá</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right side - Login Form -->
+        <div class="auth-right-panel">
+            <div class="auth-form-container">
+                <!-- Header -->
+                <div class="auth-header">
+                    <div class="auth-icon">
+                        <i class="fas fa-sign-in-alt"></i>
+                    </div>
+                    <h2 class="auth-title">Chào mừng trở lại</h2>
+                    <p class="auth-subtitle">Đăng nhập để tiếp tục hành trình đọc sách của bạn</p>
+                </div>
+
+                <!-- Alert Messages -->
+        @if (!string.IsNullOrEmpty(resetSuccessMessage))
+        {
+                    <div class="alert alert-modern alert-success alert-dismissible fade show" role="alert">
+                        <div class="alert-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="alert-content">
+                            <div class="alert-title">Thành công!</div>
+                            <div class="alert-message">@resetSuccessMessage</div>
+                        </div>
+                        <button type="button" class="btn-close-modern" data-bs-dismiss="alert" aria-label="Close">
+                            <i class="fas fa-times"></i>
+                        </button>
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+                    <div class="alert alert-modern alert-danger alert-dismissible fade show" role="alert">
+                        <div class="alert-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="alert-content">
+                            <div class="alert-title">Lỗi!</div>
+                            <div class="alert-message">@errorMessage</div>
+                        </div>
+                        <button type="button" class="btn-close-modern" data-bs-dismiss="alert" aria-label="Close">
+                            <i class="fas fa-times"></i>
+                        </button>
+            </div>
+        }
+
+                <!-- Login Form -->
+        <form method="post" class="auth-form animated-slide-in" id="loginForm">
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">
+                            <i class="fas fa-user"></i>
+                            Tên người dùng
+                        </label>
+                        <div class="input-wrapper-modern">
+                            <input type="text" name="username" class="form-input-modern" required placeholder="Nhập tên người dùng của bạn" />
+                            <div class="input-icon">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">
+                            <i class="fas fa-lock"></i>
+                            Mật khẩu
+                        </label>
+                        <div class="input-wrapper-modern">
+                            <input type="password" name="password" class="form-input-modern" required placeholder="Nhập mật khẩu của bạn" />
+                            <div class="input-icon">
+                                <i class="fas fa-lock"></i>
+                            </div>
+                            <button type="button" class="password-toggle" onclick="togglePassword()">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-options">
+                        <label class="checkbox-wrapper">
+                            <input type="checkbox" class="checkbox-input" />
+                            <span class="checkmark"></span>
+                            <span class="checkbox-label">Ghi nhớ đăng nhập</span>
+                        </label>
+                        <a href="@Url.Action("ForgotPassword", "Account")" class="forgot-password-link">Quên mật khẩu?</a>
+                    </div>
+
+                    <button type="submit" class="btn-auth-primary">
+                        <span class="btn-text">Đăng nhập</span>
+                        <div class="btn-loading" style="display: none;">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+                    </button>
+                </form>
+
+                <!-- Social Login -->
+                <div class="social-login">
+                    <div class="divider">
+                        <span>hoặc</span>
+                    </div>
+                    <div class="social-buttons">
+                        <button class="btn-social btn-google">
+                            <i class="fab fa-google"></i>
+                            <span>Đăng nhập với Google</span>
+                        </button>
+                        <button class="btn-social btn-facebook">
+                            <i class="fab fa-facebook-f"></i>
+                            <span>Đăng nhập với Facebook</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Register Link -->
+                <div class="auth-footer">
+                    <p class="auth-footer-text">
+                        Chưa có tài khoản?
+                        <a href="@Url.Action("Register", "Account")" class="auth-link-primary">Đăng ký ngay</a>
+                    </p>
+                </div>
+
+                @if (!string.IsNullOrEmpty(thongBaoMessage))
+                {
+                    <div class="alert alert-modern alert-success alert-dismissible fade show mt-3" role="alert">
+                        <div class="alert-icon">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        <div class="alert-content">
+                            <div class="alert-title">Thông báo</div>
+                            <div class="alert-message">@thongBaoMessage</div>
+                        </div>
+                        <button type="button" class="btn-close-modern" data-bs-dismiss="alert" aria-label="Close">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                }
+            </div>
+
+            <!-- Back to Home -->
+            <div class="back-to-home">
+                <a href="@Url.Action("Index", "Home")" class="back-link">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Về trang chủ</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginForm = document.getElementById('loginForm');
+
+            // Form submission handling
+            if (loginForm) {
+                loginForm.addEventListener('submit', (e) => {
+                    const submitBtn = loginForm.querySelector('.btn-auth-primary');
+                    const btnText = submitBtn.querySelector('.btn-text');
+                    const btnLoading = submitBtn.querySelector('.btn-loading');
+
+                    // Show loading state
+                    btnText.style.display = 'none';
+                    btnLoading.style.display = 'flex';
+                    submitBtn.disabled = true;
+
+                    const usernameInput = loginForm.querySelector('input[name="username"]');
+                    console.log('[Login] Form submitted', {
+                        username: usernameInput ? usernameInput.value : '(empty)'
+                    });
+                });
+            }
+
+            // Password toggle functionality
+            window.togglePassword = function() {
+                const passwordInput = document.querySelector('input[name="password"]');
+                const toggleBtn = document.querySelector('.password-toggle i');
+
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    toggleBtn.className = 'fas fa-eye-slash';
+                } else {
+                    passwordInput.type = 'password';
+                    toggleBtn.className = 'fas fa-eye';
+                }
+            };
+
+            // Input focus effects
+            const inputs = document.querySelectorAll('.form-input-modern');
+            inputs.forEach(input => {
+                input.addEventListener('focus', () => {
+                    input.parentElement.classList.add('focused');
+                });
+
+                input.addEventListener('blur', () => {
+                    if (!input.value) {
+                        input.parentElement.classList.remove('focused');
+                    }
+                });
+
+                // Keep focused state if input has value
+                if (input.value) {
+                    input.parentElement.classList.add('focused');
+                }
+            });
+
+            // Animate floating shapes
+            const shapes = document.querySelectorAll('.shape');
+            shapes.forEach((shape, index) => {
+                shape.style.animationDelay = `${index * 2}s`;
+            });
+
+            const serverState = {
+                error: @Html.Raw(JsonSerializer.Serialize<string?>(errorMessage)),
+                resetSuccess: @Html.Raw(JsonSerializer.Serialize<string?>(resetSuccessMessage)),
+                thongBao: @Html.Raw(JsonSerializer.Serialize<string?>(thongBaoMessage)),
+                exception: @Html.Raw(JsonSerializer.Serialize<string?>(serverException))
+            };
+
+            if (serverState.error) {
+                console.error('[Login] Server returned an error', serverState.error);
+                // Add shake animation to form on error
+                loginForm.classList.add('shake');
+                setTimeout(() => loginForm.classList.remove('shake'), 500);
+            } else {
+                console.log('[Login] Page ready, no server-side errors detected.');
+            }
+
+            if (serverState.resetSuccess) {
+                console.info('[Login] Info', serverState.resetSuccess);
+            }
+
+            if (serverState.thongBao) {
+                console.info('[Login] Notification', serverState.thongBao);
+            }
+
+            if (serverState.exception) {
+                console.error('[Login] Exception details', serverState.exception);
+            }
+
+            // Add particle container
+            const particleContainer = document.querySelector('.particle-container');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.animationDuration = `${Math.random() * 10 + 10}s`;
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+                particle.style.width = `${Math.random() * 10 + 5}px`;
+                particle.style.height = particle.style.width;
+                particle.style.background = `rgba(255,255,255, ${Math.random() * 0.5 + 0.2})`;
+                particleContainer.appendChild(particle);
+            }
+        });
+    </script>
+}

@@ -1,0 +1,38 @@
+﻿@model STOREBOOKS.Models.TaiKhoan
+@{
+    ViewData["Title"] = "Thông tin tài khoản";
+}
+
+<div class="profile-container">
+    <div class="profile-card">
+        <h2 class="profile-title"><i class="fas fa-user-circle me-2"></i> Thông tin tài khoản</h2>
+        <div class="profile-info-grid">
+            <div class="info-item">
+                <span class="info-label"><i class="fas fa-user-tag"></i> Tên đăng nhập:</span>
+                <span class="info-value">@Model.TenDangNhap</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label"><i class="fas fa-envelope"></i> Email:</span>
+                <span class="info-value">@Model.Email</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label"><i class="fas fa-shield-alt"></i> Vai trò:</span>
+                <span class="info-value">@Model.VaiTro</span>
+            </div>
+        </div>
+
+        <hr class="profile-divider" />
+
+        <div class="profile-actions">
+            <a asp-controller="YeuThich" asp-action="Index" class="btn btn-action-outline-danger">
+                <i class="fas fa-heart me-2"></i> Sách yêu thích
+            </a>
+            <a asp-controller="Order" asp-action="LichSu" class="btn btn-action-outline-primary">
+                <i class="fas fa-history me-2"></i> Lịch sử đơn hàng
+            </a>
+            <a asp-controller="Account" asp-action="DoiMatKhau" class="btn btn-action-outline-secondary">
+                <i class="fas fa-lock me-2"></i> Đổi mật khẩu
+            </a>
+        </div>
+    </div>
+</div>

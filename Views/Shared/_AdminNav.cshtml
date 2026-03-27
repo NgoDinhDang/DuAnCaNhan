@@ -1,0 +1,75 @@
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+    var currentArea = ViewContext.RouteData.Values["area"]?.ToString();
+}
+
+@if (HttpContextAccessor.HttpContext?.Session?.GetString("VaiTro") == "Admin")
+{
+    <div class="admin-nav-container">
+        <div class="admin-nav-header">
+            <h3 class="admin-nav-title">
+                <i class="fas fa-cog me-2"></i>
+                Bảng điều khiển quản trị
+            </h3>
+        </div>
+        
+        <nav class="admin-nav-menu">
+            <a class="admin-nav-item @(currentController == "ThongKe" && currentAction == "Index" && string.IsNullOrEmpty(currentArea) ? "active" : "")" 
+               href="/admin/thongke">
+                <i class="fas fa-chart-line"></i>
+                <span>Thống kê doanh thu</span>
+            </a>
+            
+            <a class="admin-nav-item @(currentController == "ThongKe" && currentAction == "SachBanChay" && string.IsNullOrEmpty(currentArea) ? "active" : "")" 
+               href="/admin/thongke/sachbanchay">
+                <i class="fas fa-fire"></i>
+                <span>Sách bán chạy & Lượt xem</span>
+            </a>
+            
+            <a class="admin-nav-item @(currentController == "DanhMuc" && string.IsNullOrEmpty(currentArea) ? "active" : "")" 
+               href="/admin/danhmuc">
+                <i class="fas fa-list"></i>
+                <span>Quản lý danh mục</span>
+            </a>
+            
+            <a class="admin-nav-item @(currentController == "Order" && string.IsNullOrEmpty(currentArea) ? "active" : "")" 
+               href="/admin/order">
+                <i class="fas fa-shopping-bag"></i>
+                <span>Quản lý đơn hàng</span>
+            </a>
+            
+            <a class="admin-nav-item @(currentController == "AdminPayment" && currentArea == "Admin" ? "active" : "")" 
+               href="/Admin/AdminPayment">
+                <i class="fas fa-credit-card"></i>
+                <span>Quản lý thanh toán</span>
+            </a>
+            
+            <a class="admin-nav-item @(currentController == "NguoiDung" && string.IsNullOrEmpty(currentArea) ? "active" : "")" 
+               href="/admin/nguoidung">
+                <i class="fas fa-users"></i>
+                <span>Quản lý người dùng</span>
+            </a>
+            
+            <a class="admin-nav-item @(currentController == "AdminDanhGia" && string.IsNullOrEmpty(currentArea) ? "active" : "")" 
+               href="/admin/danhgia">
+                <i class="fas fa-star"></i>
+                <span>Quản lý đánh giá</span>
+            </a>
+            
+            <a class="admin-nav-item @(currentController == "Chat" && currentAction == "Admin" ? "active" : "")" 
+               href="/admin/chat">
+                <i class="fas fa-comments"></i>
+                <span>Quản lý Chat</span>
+            </a>
+            
+            <a class="admin-nav-item @(currentController == "Books" && string.IsNullOrEmpty(currentArea) ? "active" : "")" 
+               href="/Books">
+                <i class="fas fa-book"></i>
+                <span>Quản lý sách</span>
+            </a>
+        </nav>
+    </div>
+}
+

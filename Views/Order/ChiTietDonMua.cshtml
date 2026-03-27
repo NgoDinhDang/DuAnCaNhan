@@ -1,0 +1,1034 @@
+﻿@model STOREBOOKS.Models.Order
+@{
+    ViewData["Title"] = "Chi tiết đơn hàng #" + Model.OrderId;
+
+    // Xác định trạng thái hiện tại
+    var statuses = new List<string> { "Chờ xác nhận", "Đã xác nhận", "Đang giao", "Đã giao" };
+    var currentStatusIndex = Model.TrangThai switch
+    {
+        "Chờ xác nhận" => 0,
+        "Đã xác nhận" => 1,
+        "Đang giao" => 2,
+        "Đã giao" => 3,
+        "Đã thanh toán" => 1, // Đã thanh toán = Đã xác nhận
+        "Đã hủy" => -1,
+        _ => 0
+    };
+
+    var isCancelled = Model.TrangThai == "Đã hủy";
+    var canCancel = Model.TrangThai == "Chờ xác nhận";
+}
+
+<!-- Order Detail Header -->
+<div class="order-detail-header">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="header-content">
+                    <div class="header-icon">
+                        <i class="fas fa-receipt"></i>
+                    </div>
+                    <div class="header-text">
+                        <h1 class="header-title">Chi tiết đơn hàng <span class="order-id">#@Model.OrderId</span></h1>
+                        <p class="header-subtitle">
+                            <i class="fas fa-calendar-alt me-1"></i>
+                            Ngày đặt: @Model.NgayDat.ToString("dd/MM/yyyy HH:mm")
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a href="/Order/LichSu" class="btn-back-modern">
+                    <i class="fas fa-arrow-left me-2"></i>
+                    Quay lại lịch sử
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid py-5">
+
+    @if (!isCancelled)
+    {
+        <!-- Order Status Timeline -->
+        <div class="order-status-timeline">
+            <div class="timeline-header">
+                <h3 class="timeline-title">
+                    <i class="fas fa-route me-2"></i>
+                    Trạng thái đơn hàng
+                </h3>
+            </div>
+            <div class="timeline-container">
+                @for (int i = 0; i < statuses.Count; i++)
+                {
+                    var status = statuses[i];
+                    var isActive = i <= currentStatusIndex;
+                    var isCurrent = i == currentStatusIndex;
+
+                    <div class="timeline-step @(isActive ? "active" : "") @(isCurrent ? "current" : "")">
+                        <div class="step-icon">
+                            @if (i == 0)
+                            {
+                                <i class="fas fa-clock"></i>
+                            }
+                            else if (i == 1)
+                            {
+                                <i class="fas fa-check-circle"></i>
+                            }
+                            else if (i == 2)
+                            {
+                                <i class="fas fa-shipping-fast"></i>
+                            }
+                            else
+                            {
+                                <i class="fas fa-box-open"></i>
+                            }
+                        </div>
+                        <div class="step-content">
+                            <div class="step-label">@status</div>
+                            @if (isCurrent)
+                            {
+                                <div class="step-note">Đơn hàng đang ở trạng thái này</div>
+                            }
+                        </div>
+                        @if (i < statuses.Count - 1)
+                        {
+                            <div class="step-connector @(isActive ? "active" : "")"></div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Cancelled Order Banner -->
+        <div class="cancelled-order-banner">
+            <div class="cancelled-icon">
+                <i class="fas fa-times-circle"></i>
+            </div>
+            <div class="cancelled-content">
+                <h3 class="cancelled-title">Đơn hàng đã bị hủy</h3>
+                <p class="cancelled-description">
+                    Đơn hàng này đã được hủy vào ngày @Model.NgayDat.ToString("dd/MM/yyyy")
+                </p>
+            </div>
+        </div>
+    }
+
+    <!-- Order Information Cards -->
+    <div class="row g-4 mb-5">
+        <!-- Shipping Information -->
+        <div class="col-lg-4">
+            <div class="info-card-modern">
+                <div class="info-card-header-modern">
+                    <div class="card-icon-modern">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h4 class="card-title-modern">Thông tin giao hàng</h4>
+                </div>
+                <div class="info-card-body-modern">
+                    <div class="info-row-modern">
+                        <span class="info-label-modern">Người nhận:</span>
+                        <span class="info-value-modern">@Model.TenKhachHang</span>
+                    </div>
+                    <div class="info-row-modern">
+                        <span class="info-label-modern">Số điện thoại:</span>
+                        <span class="info-value-modern">@Model.SoDienThoai</span>
+                    </div>
+                    <div class="info-row-modern">
+                        <span class="info-label-modern">Địa chỉ:</span>
+                        <span class="info-value-modern">@Model.DiaChiGiaoHang</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Information -->
+        <div class="col-lg-4">
+            <div class="info-card-modern">
+                <div class="info-card-header-modern">
+                    <div class="card-icon-modern">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <h4 class="card-title-modern">Thông tin thanh toán</h4>
+                </div>
+                <div class="info-card-body-modern">
+                    <div class="info-row-modern">
+                        <span class="info-label-modern">Trạng thái:</span>
+                        <span class="status-badge-modern status-@Model.TrangThai.Replace(" ", "-").ToLower()">
+                            @Model.TrangThai
+                        </span>
+                    </div>
+                    <div class="info-row-modern">
+                        <span class="info-label-modern">Phương thức:</span>
+                        <span class="info-value-modern">
+                            @(Model.TrangThai == "Đã thanh toán" ? "Ví MoMo" : "Thanh toán khi nhận hàng")
+                        </span>
+                    </div>
+                    <div class="info-row-modern total-amount-modern">
+                        <span class="info-label-modern">Tổng tiền:</span>
+                        <span class="info-value-modern">@Model.TongTien.ToString("N0") ₫</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Customer Information -->
+        <div class="col-lg-4">
+            <div class="info-card-modern">
+                <div class="info-card-header-modern">
+                    <div class="card-icon-modern">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h4 class="card-title-modern">Thông tin khách hàng</h4>
+                </div>
+                <div class="info-card-body-modern">
+                    <div class="info-row-modern">
+                        <span class="info-label-modern">Họ tên:</span>
+                        <span class="info-value-modern">@Model.TenKhachHang</span>
+                    </div>
+                    <div class="info-row-modern">
+                        <span class="info-label-modern">Email:</span>
+                        <span class="info-value-modern">@Model.Email</span>
+                    </div>
+                    <div class="info-row-modern">
+                        <span class="info-label-modern">SĐT:</span>
+                        <span class="info-value-modern">@Model.SoDienThoai</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Items Section -->
+    <div class="order-items-section">
+        <div class="section-header-modern">
+            <div class="section-icon-modern">
+                <i class="fas fa-shopping-bag"></i>
+            </div>
+            <h3 class="section-title-modern">Sản phẩm trong đơn hàng</h3>
+            <span class="item-count-badge">@Model.OrderDetails.Count() sản phẩm</span>
+        </div>
+
+        <div class="order-items-list">
+            @foreach (var item in Model.OrderDetails)
+            {
+                <div class="order-item-card">
+                    <div class="item-image-section">
+                        <img src="@(item.Sach?.HinhAnh ?? "/images/default-book.jpg")"
+                             alt="@item.Sach?.TenSach"
+                             class="item-image">
+                    </div>
+                    <div class="item-details-section">
+                        <h4 class="item-title">@item.Sach?.TenSach</h4>
+                        <div class="item-meta">
+                            <span class="item-price">@item.Gia.ToString("N0") ₫</span>
+                            <span class="item-quantity">× @item.SoLuong</span>
+                        </div>
+                        <div class="item-author">
+                            <i class="fas fa-user-edit me-1"></i>
+                            @item.Sach?.TacGia
+                        </div>
+                    </div>
+                    <div class="item-total-section">
+                        <div class="item-total-price">@((item.Gia * item.SoLuong).ToString("N0")) ₫</div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Order Summary -->
+        <div class="order-summary-modern">
+            <div class="summary-header">
+                <h4>Tóm tắt đơn hàng</h4>
+            </div>
+            <div class="summary-body">
+                <div class="summary-row-modern">
+                    <span class="summary-label">Tạm tính:</span>
+                    <span class="summary-value">@Model.TongTien.ToString("N0") ₫</span>
+                </div>
+                <div class="summary-row-modern">
+                    <span class="summary-label">Phí vận chuyển:</span>
+                    <span class="summary-value free-shipping">Miễn phí</span>
+                </div>
+                <div class="summary-row-modern total-row">
+                    <span class="summary-label total-label">Tổng cộng:</span>
+                    <span class="summary-value total-value">@Model.TongTien.ToString("N0") ₫</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    @if (canCancel)
+    {
+        <div class="order-actions-section">
+            <div class="action-card">
+                <div class="action-header">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h4>Hủy đơn hàng</h4>
+                </div>
+                <p class="action-description">
+                    Bạn có thể hủy đơn hàng này vì nó đang ở trạng thái "Chờ xác nhận".
+                    Hành động này không thể hoàn tác.
+                </p>
+                <button type="button" id="btnCancelOrder" class="btn-cancel-modern" onclick="cancelOrder(@Model.OrderId)">
+                    <i class="fas fa-times me-2"></i>
+                    Hủy đơn hàng
+                </button>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    /* ===== ORDER DETAIL HEADER ===== */
+    .order-detail-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 3rem 0;
+        margin-bottom: 2rem;
+    }
+
+    .header-content {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .header-icon {
+        width: 60px;
+        height: 60px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        backdrop-filter: blur(10px);
+    }
+
+    .header-title {
+        font-size: 2.25rem;
+        font-weight: 700;
+        margin: 0;
+        background: linear-gradient(45deg, #ffffff, rgba(255,255,255,0.8));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .order-id {
+        color: #fbbf24;
+        font-weight: 800;
+    }
+
+    .header-subtitle {
+        font-size: 1.1rem;
+        margin: 0.5rem 0 0 0;
+        opacity: 0.9;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-back-modern {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.875rem 2rem;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+
+    .btn-back-modern:hover {
+        background: white;
+        color: #667eea;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    }
+
+    /* ===== ORDER STATUS TIMELINE ===== */
+    .order-status-timeline {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        margin-bottom: 2rem;
+        overflow: hidden;
+    }
+
+    .timeline-header {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .timeline-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .timeline-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 2rem;
+        gap: 1rem;
+    }
+
+    .timeline-step {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        opacity: 0.5;
+        transition: all 0.3s ease;
+    }
+
+    .timeline-step.active {
+        opacity: 1;
+    }
+
+    .timeline-step.current {
+        transform: scale(1.05);
+    }
+
+    .timeline-step.current .step-icon {
+        animation: pulse-glow 2s infinite;
+    }
+
+    @@keyframes pulse-glow {
+        0%, 100% {
+            box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.4);
+        }
+        50% {
+            box-shadow: 0 0 0 15px rgba(102, 126, 234, 0.2);
+        }
+    }
+
+    .step-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: #e2e8f0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #718096;
+        margin-bottom: 0.5rem;
+        transition: all 0.3s ease;
+        font-size: 0.75rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    .timeline-step.active .step-icon {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .step-content {
+        text-align: center;
+    }
+
+    .step-label {
+        font-weight: 600;
+        color: #4a5568;
+        margin-bottom: 0.25rem;
+        font-size: 0.9rem;
+    }
+
+    .timeline-step.active .step-label {
+        color: #2d3748;
+    }
+
+    .step-note {
+        font-size: 0.75rem;
+        color: #667eea;
+        font-weight: 500;
+    }
+
+    .step-connector {
+        position: absolute;
+        top: 15px;
+        left: 50%;
+        width: calc(100% - 50px);
+        height: 1.5px;
+        background: #e2e8f0;
+        z-index: 1;
+    }
+
+    .step-connector.active {
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    }
+
+    /* ===== CANCELLED ORDER BANNER ===== */
+    .cancelled-order-banner {
+        background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+        border: 2px solid #fca5a5;
+        border-radius: 16px;
+        padding: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .cancelled-icon {
+        width: 36px;
+        height: 36px;
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 0.95rem;
+        flex-shrink: 0;
+    }
+
+    .cancelled-content {
+        flex: 1;
+    }
+
+    .cancelled-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #dc2626;
+        margin: 0 0 0.5rem 0;
+    }
+
+    .cancelled-description {
+        color: #7f1d1d;
+        margin: 0;
+        font-size: 1rem;
+    }
+
+    /* ===== INFO CARDS MODERN ===== */
+    .info-card-modern {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        overflow: hidden;
+        transition: all 0.3s ease;
+        height: 100%;
+        border: 1px solid rgba(255,255,255,0.8);
+    }
+
+    .info-card-modern:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+    }
+
+    .info-card-header-modern {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .card-icon-modern {
+        width: 24px;
+        height: 24px;
+        font-size: 0.65rem;
+    }
+
+    .card-title-modern {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .info-card-body-modern {
+        padding: 0.8rem;
+    }
+
+    .info-row-modern {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.3rem 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .info-row-modern:last-child {
+        border-bottom: none;
+    }
+
+    .info-label-modern {
+        color: #64748b;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .info-value-modern {
+        color: #1e293b;
+        font-weight: 700;
+        text-align: right;
+        font-size: 0.95rem;
+    }
+
+    .total-amount-modern {
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        margin: 0 -1.5rem -1.5rem;
+        padding: 1.25rem 1.5rem;
+        border-bottom: none;
+    }
+
+    .total-amount-modern .info-value-modern {
+        color: #0369a1;
+        font-size: 1.5rem;
+        font-weight: 800;
+    }
+
+    /* ===== STATUS BADGES ===== */
+    .status-badge-modern {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .status-cho-xac-nhan {
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        color: white;
+    }
+
+    .status-dang-giao {
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        color: white;
+    }
+
+    .status-da-giao {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+    }
+
+    .status-da-huy {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+    }
+
+    /* ===== ORDER ITEMS SECTION ===== */
+    .order-items-section {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+
+    .section-header-modern {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        padding: 0.8rem 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .section-icon-modern {
+        width: 24px;
+        height: 24px;
+        font-size: 0.65rem;
+    }
+
+    .section-title-modern {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin: 0;
+        flex: 1;
+    }
+
+    .item-count-badge {
+        background: #667eea;
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .order-items-list {
+        padding: 0;
+    }
+
+    .order-item-card {
+        display: flex;
+        align-items: center;
+        padding: 0.8rem 1.2rem;
+        border-bottom: 1px solid #f1f5f9;
+        transition: all 0.3s ease;
+    }
+
+    .order-item-card:hover {
+        background: #f8fafc;
+    }
+
+    .order-item-card:last-child {
+        border-bottom: none;
+    }
+
+    .item-image-section {
+        flex-shrink: 0;
+        margin-right: 1.5rem;
+    }
+
+    .item-image {
+        width: 48px;
+        height: 64px;
+        object-fit: cover;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .item-details-section {
+        flex: 1;
+        margin-right: 1.5rem;
+    }
+
+    .item-title {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0 0 0.2rem 0;
+        line-height: 1.4;
+    }
+
+    .item-meta {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.2rem;
+    }
+
+    .item-price {
+        color: #64748b;
+        font-weight: 600;
+        font-size: 0.75rem;
+    }
+
+    .item-quantity {
+        color: #94a3b8;
+        font-size: 0.7rem;
+    }
+
+    .item-author {
+        color: #64748b;
+        font-size: 0.65rem;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .item-total-section {
+        flex-shrink: 0;
+        text-align: right;
+    }
+
+    .item-total-price {
+        font-size: 0.95rem;
+        font-weight: 800;
+        color: #667eea;
+    }
+
+    /* ===== ORDER SUMMARY MODERN ===== */
+    .order-summary-modern {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .summary-header {
+        padding: 0.8rem 1.2rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .summary-header h4 {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin: 0;
+    }
+
+    .summary-body {
+        padding: 0.8rem 1.2rem;
+    }
+
+    .summary-row-modern {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.3rem 0;
+        color: #475569;
+        font-weight: 500;
+    }
+
+    .summary-label {
+        font-size: 0.75rem;
+    }
+
+    .summary-value {
+        font-weight: 700;
+        color: #1e293b;
+        font-size: 0.75rem;
+    }
+
+    .free-shipping {
+        color: #059669 !important;
+        font-weight: 600;
+    }
+
+    .total-row {
+        border-top: 2px solid #cbd5e1;
+        margin-top: 1rem;
+        padding-top: 1.25rem;
+    }
+
+    .total-label {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #2d3748;
+    }
+
+    .total-value {
+        font-size: 0.95rem;
+        font-weight: 800;
+        color: #667eea;
+    }
+
+    /* ===== ORDER ACTIONS ===== */
+    .order-actions-section {
+        margin-top: 2rem;
+    }
+
+    .action-card {
+        background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
+        border: 2px solid #fca5a5;
+        border-radius: 16px;
+        padding: 1.2rem;
+        text-align: center;
+    }
+
+    .action-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.3rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .action-header i {
+        color: #dc2626;
+        font-size: 1rem;
+    }
+
+    .action-header h4 {
+        color: #dc2626;
+        font-size: 0.95rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .action-description {
+        color: #7f1d1d;
+        margin-bottom: 0.75rem;
+        font-size: 0.8rem;
+        line-height: 1.4;
+    }
+
+    .btn-cancel-modern {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.6rem 1.2rem;
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+    }
+
+    .btn-cancel-modern:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(220, 38, 38, 0.4);
+    }
+
+    /* ===== RESPONSIVE DESIGN ===== */
+    @@media (max-width: 992px) {
+        .timeline-container {
+            flex-direction: column;
+            gap: 2rem;
+            padding: 1.5rem;
+        }
+
+        .step-connector {
+            display: none;
+        }
+
+        .order-item-card {
+            flex-direction: column;
+            text-align: center;
+            gap: 1rem;
+        }
+
+        .item-details-section {
+            text-align: center;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .order-detail-header {
+            padding: 2rem 0;
+        }
+
+        .header-content {
+            flex-direction: column;
+            text-align: center;
+            gap: 1rem;
+        }
+
+        .header-title {
+            font-size: 1.875rem;
+        }
+
+        .header-icon {
+            width: 50px;
+            height: 50px;
+            font-size: 1.25rem;
+        }
+
+        .section-header-modern {
+            padding: 1.25rem 1.5rem;
+        }
+
+        .order-item-card {
+            padding: 1.25rem 1.5rem;
+        }
+
+        .item-image {
+            width: 60px;
+            height: 80px;
+        }
+
+        .summary-body {
+            padding: 1.25rem 1.5rem;
+        }
+
+        .cancelled-order-banner {
+            flex-direction: column;
+            text-align: center;
+            gap: 1rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .info-card-modern {
+            margin-bottom: 1rem;
+        }
+
+        .card-title-modern {
+            font-size: 1.125rem;
+        }
+
+        .item-title {
+            font-size: 1rem;
+        }
+
+        .item-total-price {
+            font-size: 1.125rem;
+        }
+
+        .total-value {
+            font-size: 1.125rem;
+        }
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    async function cancelOrder(orderId) {
+        const result = await Swal.fire({
+            title: 'Xác nhận hủy đơn hàng?',
+            text: 'Bạn có chắc chắn muốn hủy đơn hàng này không?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Có, hủy đơn!',
+            cancelButtonText: 'Không'
+        });
+
+        if (result.isConfirmed) {
+            try {
+                const response = await fetch('/Order/HuyDonHang', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: `id=${orderId}`
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    await Swal.fire({
+                        icon: 'success',
+                        title: 'Đã hủy đơn hàng!',
+                        text: data.message,
+                        confirmButtonColor: '#28a745'
+                    });
+                    
+                    // Reload trang để cập nhật trạng thái
+                    location.reload();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi!',
+                        text: data.message,
+                        confirmButtonColor: '#dc3545'
+                    });
+                }
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi!',
+                    text: 'Có lỗi xảy ra khi hủy đơn hàng',
+                    confirmButtonColor: '#dc3545'
+                });
+            }
+        }
+    }
+</script>
+
+@* Anti-forgery token for AJAX requests *@
+<form id="__AjaxAntiForgeryForm" method="post" style="display:none;">
+    @Html.AntiForgeryToken()
+</form>

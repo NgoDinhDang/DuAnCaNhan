@@ -1,0 +1,286 @@
+@{
+    ViewData["Title"] = "Test Thanh Toán MoMo";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">🧪 <span class="text-primary">Test Thanh Toán MoMo</span></h2>
+    
+    <div class="alert alert-warning">
+        <i class="fas fa-exclamation-triangle"></i> <strong>Lưu ý:</strong> 
+        Trang này CHỈ dùng để test trên môi trường development! 
+        Xóa hoặc ẩn trang này khi deploy lên production.
+    </div>
+
+    <!-- Phương pháp 1: Mô phỏng callback -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-success text-white">
+            <h4 class="mb-0">
+                <i class="fas fa-flask"></i> Phương pháp 1: Mô phỏng Callback Thành Công
+            </h4>
+        </div>
+        <div class="card-body">
+            <p class="text-muted">Mô phỏng khi MoMo gọi callback về sau khi thanh toán thành công</p>
+            
+            <form method="get" action="/Payment/MoMoReturn" id="successForm">
+                <input type="hidden" name="partnerCode" value="MOMO" />
+                <input type="hidden" name="orderType" value="momo_wallet" />
+                <input type="hidden" name="payType" value="qr" />
+                <input type="hidden" name="extraData" value="" />
+                <input type="hidden" name="signature" value="test_signature_success" />
+                <input type="hidden" name="resultCode" value="0" />
+                <input type="hidden" name="message" value="Success" />
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label"><i class="fas fa-hashtag"></i> Order ID:</label>
+                        <input type="text" name="orderId" class="form-control" 
+                               value="ORDER_@(ViewContext.HttpContext.Session.GetInt32("OrderId") ?? 1)_@DateTime.Now.Ticks" />
+                        <small class="text-muted">Mã đơn hàng từ session</small>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label"><i class="fas fa-key"></i> Request ID:</label>
+                        <input type="text" name="requestId" class="form-control" 
+                               value="@Guid.NewGuid()" />
+                        <small class="text-muted">Mã yêu cầu ngẫu nhiên</small>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label"><i class="fas fa-money-bill"></i> Số tiền (VNĐ):</label>
+                        <input type="number" name="amount" class="form-control" value="100000" />
+                        <small class="text-muted">Số tiền thanh toán</small>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label"><i class="fas fa-receipt"></i> Trans ID:</label>
+                        <input type="number" name="transId" class="form-control" value="2147483647" />
+                        <small class="text-muted">Mã giao dịch MoMo</small>
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <label class="form-label"><i class="fas fa-info-circle"></i> Thông tin đơn hàng:</label>
+                        <input type="text" name="orderInfo" class="form-control" 
+                               value="Thanh toán đơn hàng #@(ViewContext.HttpContext.Session.GetInt32("OrderId") ?? 1) - STOREBOOKS" />
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <label class="form-label"><i class="fas fa-clock"></i> Response Time:</label>
+                        <input type="number" name="responseTime" class="form-control" 
+                               value="@DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()" />
+                        <small class="text-muted">Timestamp hiện tại</small>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-success btn-lg w-100">
+                    <i class="fas fa-check-circle"></i> Mô phỏng Thanh Toán Thành Công
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Phương pháp 2: Mô phỏng thất bại -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-danger text-white">
+            <h4 class="mb-0">
+                <i class="fas fa-times-circle"></i> Phương pháp 2: Mô phỏng Callback Thất Bại
+            </h4>
+        </div>
+        <div class="card-body">
+            <p class="text-muted">Mô phỏng khi thanh toán thất bại hoặc bị hủy</p>
+            
+            <form method="get" action="/Payment/MoMoReturn" id="failForm">
+                <input type="hidden" name="partnerCode" value="MOMO" />
+                <input type="hidden" name="orderType" value="momo_wallet" />
+                <input type="hidden" name="payType" value="qr" />
+                <input type="hidden" name="extraData" value="" />
+                <input type="hidden" name="signature" value="test_signature_fail" />
+                
+                <input type="hidden" name="orderId" value="ORDER_@(ViewContext.HttpContext.Session.GetInt32("OrderId") ?? 1)_@DateTime.Now.Ticks" />
+                <input type="hidden" name="requestId" value="@Guid.NewGuid()" />
+                <input type="hidden" name="amount" value="100000" />
+                <input type="hidden" name="orderInfo" value="Thanh toán đơn hàng #@(ViewContext.HttpContext.Session.GetInt32("OrderId") ?? 1)" />
+                <input type="hidden" name="transId" value="0" />
+                <input type="hidden" name="responseTime" value="@DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()" />
+
+                <div class="mb-3">
+                    <label class="form-label"><i class="fas fa-exclamation-triangle"></i> Loại lỗi:</label>
+                    <select name="resultCode" class="form-control" id="errorType">
+                        <option value="1006">1006 - Người dùng hủy giao dịch</option>
+                        <option value="9000">9000 - Giao dịch bị từ chối</option>
+                        <option value="1001">1001 - Giao dịch thất bại do lỗi hệ thống</option>
+                        <option value="1002">1002 - Giao dịch không hợp lệ</option>
+                    </select>
+                </div>
+
+                <input type="hidden" name="message" id="errorMessage" value="User cancelled transaction" />
+
+                <button type="submit" class="btn btn-danger btn-lg w-100">
+                    <i class="fas fa-times-circle"></i> Mô phỏng Thanh Toán Thất Bại
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Hướng dẫn -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-info text-white">
+            <h4 class="mb-0">
+                <i class="fas fa-book"></i> Hướng Dẫn Test Với MoMo Thật
+            </h4>
+        </div>
+        <div class="card-body">
+            <h5 class="text-primary">📱 Test với App MoMo (Khuyến nghị)</h5>
+            <ol class="mb-4">
+                <li><strong>Cài đặt:</strong> Tải app MoMo từ CH Play hoặc App Store</li>
+                <li><strong>Đăng ký:</strong> Tạo tài khoản MoMo (miễn phí, không cần nạp tiền)</li>
+                <li><strong>Mua hàng:</strong> Thêm sách vào giỏ → Thanh toán → Chọn MoMo</li>
+                <li><strong>Quét mã:</strong> Quét QR code hiển thị bằng app MoMo</li>
+                <li><strong>Xác nhận:</strong> Xác nhận thanh toán trong app</li>
+                <li><strong>Kết quả:</strong> 
+                    <ul>
+                        <li>✅ Giao dịch thành công</li>
+                        <li>✅ Tiền KHÔNG bị trừ (vì merchant là TEST)</li>
+                        <li>✅ Đơn hàng cập nhật trạng thái thành công</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <h5 class="text-primary">🌐 Test trên MoMo Test Portal</h5>
+            <ol class="mb-4">
+                <li>Tạo đơn hàng → Chọn MoMo → Nhập thông tin</li>
+                <li>Khi chuyển đến trang MoMo, bạn sẽ thấy giao diện test</li>
+                <li>Click nút <span class="badge bg-success">Thanh toán thành công</span> để test</li>
+                <li>Hoặc click <span class="badge bg-danger">Thanh toán thất bại</span> để test lỗi</li>
+                <li>Hệ thống sẽ redirect về trang kết quả</li>
+            </ol>
+
+            <div class="alert alert-success">
+                <i class="fas fa-lightbulb"></i> <strong>Mẹo:</strong> 
+                Credentials hiện tại là <strong>TEST CREDENTIALS CÔNG KHAI</strong> của MoMo.
+                Bạn có thể test thoải mái mà không lo mất tiền!
+            </div>
+        </div>
+    </div>
+
+    <!-- Debug Info -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-secondary text-white">
+            <h4 class="mb-0">
+                <i class="fas fa-bug"></i> Debug Information
+            </h4>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <tr>
+                    <th width="200">Session OrderId:</th>
+                    <td>@(ViewContext.HttpContext.Session.GetInt32("OrderId")?.ToString() ?? "Chưa có")</td>
+                </tr>
+                <tr>
+                    <th>Session MoMoOrderId:</th>
+                    <td>@(ViewContext.HttpContext.Session.GetString("MoMoOrderId") ?? "Chưa có")</td>
+                </tr>
+                <tr>
+                    <th>User đăng nhập:</th>
+                    <td>@(ViewContext.HttpContext.Session.GetString("TenDangNhap") ?? "Chưa đăng nhập")</td>
+                </tr>
+                <tr>
+                    <th>Current Time:</th>
+                    <td>@DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                </tr>
+            </table>
+
+            <div class="alert alert-info mb-0">
+                <strong>Để test đầy đủ:</strong>
+                <ol class="mb-0">
+                    <li>Đăng nhập vào tài khoản</li>
+                    <li>Thêm sách vào giỏ hàng</li>
+                    <li>Thanh toán → Chọn MoMo</li>
+                    <li>Note lại OrderId từ session</li>
+                    <li>Quay lại trang này để test callback</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-4 mb-4">
+        <a href="/" class="btn btn-outline-primary">
+            <i class="fas fa-home"></i> Về trang chủ
+        </a>
+        <a href="/Order/LichSu" class="btn btn-outline-success">
+            <i class="fas fa-history"></i> Xem lịch sử đơn hàng
+        </a>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    
+    .card-header {
+        border: none;
+        padding: 20px;
+    }
+    
+    .alert-warning {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        border: none;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #495057;
+    }
+    
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+    
+    .btn-lg {
+        padding: 15px 30px;
+        font-size: 18px;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-lg:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .badge {
+        font-size: 14px;
+        padding: 5px 10px;
+    }
+</style>
+
+<script>
+    // Update error message based on selected error type
+    document.getElementById('errorType').addEventListener('change', function() {
+        const messages = {
+            '1006': 'User cancelled transaction',
+            '9000': 'Transaction declined',
+            '1001': 'System error',
+            '1002': 'Invalid transaction'
+        };
+        document.getElementById('errorMessage').value = messages[this.value] || 'Error';
+    });
+
+    // Form submission confirmation
+    document.getElementById('successForm').addEventListener('submit', function(e) {
+        if (!confirm('Bạn có chắc muốn mô phỏng thanh toán THÀNH CÔNG?')) {
+            e.preventDefault();
+        }
+    });
+
+    document.getElementById('failForm').addEventListener('submit', function(e) {
+        if (!confirm('Bạn có chắc muốn mô phỏng thanh toán THẤT BẠI?')) {
+            e.preventDefault();
+        }
+    });
+</script>
+
+

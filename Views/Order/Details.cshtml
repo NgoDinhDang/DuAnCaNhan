@@ -1,0 +1,133 @@
+﻿@model STOREBOOKS.Models.Order
+@{
+    ViewData["Title"] = "Chi tiết đơn hàng (Admin)";
+}
+
+<div class="admin-page-header">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="admin-page-title">
+                <i class="fas fa-shopping-bag me-2"></i>
+                Chi tiết đơn hàng #@Model.OrderId
+            </h2>
+            <p class="admin-page-subtitle">Xem thông tin chi tiết đơn hàng</p>
+        </div>
+        <a href="/admin/order" class="btn btn-light btn-sm">
+            <i class="fas fa-arrow-left me-2"></i> Quay lại
+        </a>
+    </div>
+</div>
+
+<partial name="_AdminNav" />
+
+<div class="container py-4">
+
+    <div class="modern-card grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+            <p class="mb-2"><strong class="text-secondary-color">Khách hàng:</strong> @Model.TenKhachHang</p>
+            @if (Model.NguoiDung != null)
+            {
+                <p class="mb-2"><strong class="text-secondary-color">Email:</strong> @Model.NguoiDung.TaiKhoan?.Email</p>
+            }
+            <p class="mb-2"><strong class="text-secondary-color">Địa chỉ:</strong> @Model.DiaChiGiaoHang</p>
+            <p class="mb-2"><strong class="text-secondary-color">SĐT:</strong> @Model.SoDienThoai</p>
+        </div>
+        <div class="md:border-l md:pl-6 border-gray-200">
+            <p class="mb-2"><strong class="text-secondary-color">Ngày đặt:</strong> @Model.NgayDat.ToString("dd/MM/yyyy")</p>
+            <p class="mb-2"><strong class="text-secondary-color">Trạng thái:</strong> <span class="status-badge status-@Model.TrangThai.Replace(" ", "-").ToLower()">@Model.TrangThai</span></p>
+            <p class="mb-2"><strong class="text-secondary-color">Tổng tiền:</strong> <span class="text-lg font-bold text-green-600">@Model.TongTien.ToString("N0") đ</span></p>
+        </div>
+    </div>
+
+    <h3 class="text-xl font-semibold mb-4 h3-accent-header">Sản phẩm trong đơn</h3>
+    <div class="overflow-x-auto shadow-md rounded-lg">
+        <table class="min-w-full bg-white">
+            <thead class="modern-table-header">
+                <tr>
+                    <th class="py-3 px-4 text-left">Sách</th>
+                    <th class="py-3 px-4 text-right">Giá</th>
+                    <th class="py-3 px-4 text-center">Số lượng</th>
+                    <th class="py-3 px-4 text-right">Thành tiền</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.OrderDetails)
+                {
+                    <tr class="border-t border-gray-200">
+                        <td class="py-3 px-4 font-medium">@item.Sach?.TenSach</td>
+                        <td class="py-3 px-4 text-right">@item.Gia.ToString("N0") đ</td>
+                        <td class="py-3 px-4 text-center">@item.SoLuong</td>
+                        <td class="py-3 px-4 text-right">@(item.Gia * item.SoLuong).ToString("N0") đ</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="mt-8 text-center">
+        <a asp-action="Index" class="btn text-blue-600 hover:text-blue-800 text-lg font-medium inline-flex items-center">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Quay lại danh sách
+        </a>
+    </div>
+</div>
+
+<style>
+    /* Same styles as ChiTietDonMua.cshtml for consistency */
+    .h2-gradient {
+        background: linear-gradient(45deg, #6a11cb, #2575fc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: inline-block;
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .text-primary-color {
+        color: #6a11cb;
+    }
+
+    .text-secondary-color {
+        color: #2575fc;
+    }
+
+    .h3-accent-header {
+        color: #6a11cb; /* Primary color for sub-headers */
+        border-left: 5px solid #ff477e; /* Hot pink accent */
+        padding-left: 1rem;
+        margin-top: 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 0.3em 0.8em;
+        border-radius: 9999px; /* Pill shape */
+        font-weight: bold;
+        font-size: 0.9em;
+        text-transform: capitalize;
+        /* color: white; Default text color for badges - will be overridden for 'Đã giao' */
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .status-cho-xac-nhan {
+        background: linear-gradient(45deg, #ffc107, #ff9800);
+        color: white;
+    }
+
+    .status-dang-giao {
+        background: linear-gradient(45deg, #007bff, #17a2b8);
+        color: white;
+    }
+
+    .status-da-giao {
+        background: linear-gradient(45deg, #28a745, #20c997);
+        **color: black; /* Đã đổi màu chữ thành đen */
+        **
+    }
+
+    .status-da-huy {
+        background: linear-gradient(45deg, #dc3545, #fd7e14);
+        color: white;
+    }
+</style>

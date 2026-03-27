@@ -1,0 +1,67 @@
+﻿@model IEnumerable<STOREBOOKS.Models.DanhMuc>
+@{
+    ViewData["Title"] = "Quản lý danh mục";
+}
+
+<div class="admin-page-header">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="admin-page-title">
+                <i class="fas fa-list me-2"></i>
+                Quản lý danh mục
+            </h2>
+            <p class="admin-page-subtitle">Quản lý các danh mục sách trong hệ thống</p>
+        </div>
+    </div>
+</div>
+
+<partial name="_AdminNav" />
+
+<div class="container mt-4">
+    <div class="card p-5 shadow-lg rounded-15 animate__animated animate__fadeInUp">
+        <div class="mb-4">
+            <a href="/admin/danhmuc/create" class="btn btn-primary-gradient animate__animated animate__fadeInLeft">
+                <i class="fas fa-plus"></i> Thêm danh mục mới
+            </a>
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="alert alert-info custom-alert animate__animated animate__fadeIn" role="alert">
+                <h4 class="alert-heading"><i class="fas fa-exclamation-circle me-2"></i> Không có danh mục nào!</h4>
+                <p class="mb-0">Hiện tại không có danh mục nào để hiển thị. Hãy thêm một danh mục mới!</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table modern-table align-middle">
+                    <thead>
+                        <tr>
+                            <th class="text-start">Tên danh mục</th>
+                            <th class="text-center">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr class="animate__animated animate__fadeIn">
+                                <td data-label="Tên danh mục:">@item.TenDanhMuc</td>
+                                <td data-label="Hành động:" class="text-center">
+                                    <div class="d-flex justify-content-center flex-wrap gap-2">
+                                        <a href="/admin/danhmuc/edit/@item.MaDanhMuc" class="btn btn-sm btn-edit rounded-pill">
+                                            <i class="fas fa-edit"></i> Sửa
+                                        </a>
+                                        <a href="/admin/danhmuc/delete/@item.MaDanhMuc" class="btn btn-sm btn-delete rounded-pill">
+                                            <i class="fas fa-trash"></i> Xóa
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

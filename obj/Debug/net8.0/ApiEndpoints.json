@@ -1,0 +1,1634 @@
+[
+  {
+    "ContainingType": "STOREBOOKS.Controllers.ChatController",
+    "Method": "Admin",
+    "RelativePath": "admin/chat",
+    "HttpMethod": "",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AdminDanhGiaController",
+    "Method": "Index",
+    "RelativePath": "admin/danhgia",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AdminDanhGiaController",
+    "Method": "Duyet",
+    "RelativePath": "admin/danhgia/duyet/{id}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AdminDanhGiaController",
+    "Method": "Index",
+    "RelativePath": "admin/danhgia/index",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AdminDanhGiaController",
+    "Method": "Xoa",
+    "RelativePath": "admin/danhgia/xoa/{id}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.DanhMucController",
+    "Method": "Index",
+    "RelativePath": "admin/danhmuc",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.DanhMucController",
+    "Method": "Create",
+    "RelativePath": "admin/danhmuc/create",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.DanhMucController",
+    "Method": "Create",
+    "RelativePath": "admin/danhmuc/create",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "MaDanhMuc",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "TenDanhMuc",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ParentId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "ParentCategory.MaDanhMuc",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "ParentCategory.TenDanhMuc",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ParentCategory.ParentId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "ParentCategory.ParentCategory",
+        "Type": "STOREBOOKS.Models.DanhMuc",
+        "IsRequired": false
+      },
+      {
+        "Name": "ParentCategory.SubCategories",
+        "Type": "System.Collections.Generic.List\u00601[[STOREBOOKS.Models.DanhMuc, STOREBOOKS, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "ParentCategory.Saches",
+        "Type": "System.Collections.Generic.List\u00601[[STOREBOOKS.Models.Sach, STOREBOOKS, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "SubCategories",
+        "Type": "System.Collections.Generic.List\u00601[[STOREBOOKS.Models.DanhMuc, STOREBOOKS, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Saches",
+        "Type": "System.Collections.Generic.List\u00601[[STOREBOOKS.Models.Sach, STOREBOOKS, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.DanhMucController",
+    "Method": "Delete",
+    "RelativePath": "admin/danhmuc/delete/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.DanhMucController",
+    "Method": "DeleteConfirmed",
+    "RelativePath": "admin/danhmuc/delete/{id}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.DanhMucController",
+    "Method": "Edit",
+    "RelativePath": "admin/danhmuc/edit/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.DanhMucController",
+    "Method": "Edit",
+    "RelativePath": "admin/danhmuc/edit/{id}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "MaDanhMuc",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "TenDanhMuc",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ParentId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "ParentCategory.MaDanhMuc",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "ParentCategory.TenDanhMuc",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ParentCategory.ParentId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "ParentCategory.ParentCategory",
+        "Type": "STOREBOOKS.Models.DanhMuc",
+        "IsRequired": false
+      },
+      {
+        "Name": "ParentCategory.SubCategories",
+        "Type": "System.Collections.Generic.List\u00601[[STOREBOOKS.Models.DanhMuc, STOREBOOKS, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "ParentCategory.Saches",
+        "Type": "System.Collections.Generic.List\u00601[[STOREBOOKS.Models.Sach, STOREBOOKS, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "SubCategories",
+        "Type": "System.Collections.Generic.List\u00601[[STOREBOOKS.Models.DanhMuc, STOREBOOKS, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Saches",
+        "Type": "System.Collections.Generic.List\u00601[[STOREBOOKS.Models.Sach, STOREBOOKS, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.DanhMucController",
+    "Method": "Index",
+    "RelativePath": "admin/danhmuc/index",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.NguoiDungController",
+    "Method": "Index",
+    "RelativePath": "admin/nguoidung",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "keyword",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "roleFilter",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.NguoiDungController",
+    "Method": "ChanNguoiDung",
+    "RelativePath": "admin/nguoidung/channguoidung/{id}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.NguoiDungController",
+    "Method": "Create",
+    "RelativePath": "admin/nguoidung/create",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.NguoiDungController",
+    "Method": "Create",
+    "RelativePath": "admin/nguoidung/create",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "MaNguoiDung",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "MaTaiKhoan",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "TaiKhoan.MaTaiKhoan",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "TaiKhoan.TenDangNhap",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "TaiKhoan.MatKhau",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "TaiKhoan.Email",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "TaiKhoan.VaiTro",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "TaiKhoan.BiChan",
+        "Type": "System.Boolean",
+        "IsRequired": false
+      },
+      {
+        "Name": "TaiKhoan.NgayTao",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "TaiKhoan.NguoiDung.MaNguoiDung",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "TaiKhoan.NguoiDung.MaTaiKhoan",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "TaiKhoan.NguoiDung.TaiKhoan",
+        "Type": "STOREBOOKS.Models.TaiKhoan",
+        "IsRequired": false
+      },
+      {
+        "Name": "TaiKhoan.NguoiDung.HoTen",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "TaiKhoan.NguoiDung.SoDienThoai",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "TaiKhoan.NguoiDung.DiaChi",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "TaiKhoan.NguoiDung.NgaySinh",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "TaiKhoan.NguoiDung.GioiTinh",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "TaiKhoan.NguoiDung.AnhDaiDien",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "TaiKhoan.NguoiDung.NgayTao",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "TaiKhoan.NguoiDung.NgayCapNhat",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "HoTen",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "SoDienThoai",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "DiaChi",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "NgaySinh",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "GioiTinh",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "AnhDaiDien",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "NgayTao",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "NgayCapNhat",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.NguoiDungController",
+    "Method": "Delete",
+    "RelativePath": "admin/nguoidung/delete/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.NguoiDungController",
+    "Method": "DeleteConfirmed",
+    "RelativePath": "admin/nguoidung/delete/{id}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.NguoiDungController",
+    "Method": "Details",
+    "RelativePath": "admin/nguoidung/details/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.NguoiDungController",
+    "Method": "Edit",
+    "RelativePath": "admin/nguoidung/edit/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.NguoiDungController",
+    "Method": "Edit",
+    "RelativePath": "admin/nguoidung/edit/{id}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "MaNguoiDung",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "MaTaiKhoan",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "TaiKhoan.MaTaiKhoan",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "TaiKhoan.TenDangNhap",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "TaiKhoan.MatKhau",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "TaiKhoan.Email",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "TaiKhoan.VaiTro",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "TaiKhoan.BiChan",
+        "Type": "System.Boolean",
+        "IsRequired": false
+      },
+      {
+        "Name": "TaiKhoan.NgayTao",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "TaiKhoan.NguoiDung.MaNguoiDung",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "TaiKhoan.NguoiDung.MaTaiKhoan",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "TaiKhoan.NguoiDung.TaiKhoan",
+        "Type": "STOREBOOKS.Models.TaiKhoan",
+        "IsRequired": false
+      },
+      {
+        "Name": "TaiKhoan.NguoiDung.HoTen",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "TaiKhoan.NguoiDung.SoDienThoai",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "TaiKhoan.NguoiDung.DiaChi",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "TaiKhoan.NguoiDung.NgaySinh",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "TaiKhoan.NguoiDung.GioiTinh",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "TaiKhoan.NguoiDung.AnhDaiDien",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "TaiKhoan.NguoiDung.NgayTao",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "TaiKhoan.NguoiDung.NgayCapNhat",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "HoTen",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "SoDienThoai",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "DiaChi",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "NgaySinh",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "GioiTinh",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "AnhDaiDien",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "NgayTao",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "NgayCapNhat",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.NguoiDungController",
+    "Method": "Index",
+    "RelativePath": "admin/nguoidung/index",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "keyword",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "roleFilter",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.NguoiDungController",
+    "Method": "PhanQuyen",
+    "RelativePath": "admin/nguoidung/phanquyen",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "MaNguoiDung",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "VaiTro",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.NguoiDungController",
+    "Method": "PhanQuyen",
+    "RelativePath": "admin/nguoidung/phanquyen/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.NguoiDungController",
+    "Method": "ThongKe",
+    "RelativePath": "admin/nguoidung/thongke",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.OrderController",
+    "Method": "Index",
+    "RelativePath": "admin/order",
+    "HttpMethod": "",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.OrderController",
+    "Method": "CapNhatTrangThai",
+    "RelativePath": "admin/order/capnhattrangthai",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "trangThai",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.OrderController",
+    "Method": "CapNhatTrangThai",
+    "RelativePath": "admin/order/capnhattrangthai/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.OrderController",
+    "Method": "Details",
+    "RelativePath": "admin/order/details/{id}",
+    "HttpMethod": "",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.OrderController",
+    "Method": "Index",
+    "RelativePath": "admin/order/index",
+    "HttpMethod": "",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.ThongKeController",
+    "Method": "Index",
+    "RelativePath": "admin/thongke",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "tuNgay",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "denNgay",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.ThongKeController",
+    "Method": "Index",
+    "RelativePath": "admin/thongke/index",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "tuNgay",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "denNgay",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.ThongKeController",
+    "Method": "SachBanChay",
+    "RelativePath": "admin/thongke/sachbanchay",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.ApiAuthController",
+    "Method": "Login",
+    "RelativePath": "api/ApiAuth/Login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "STOREBOOKS.Controllers.LoginRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 401
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 403
+      }
+    ]
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.ApiAuthController",
+    "Method": "GetCurrentUser",
+    "RelativePath": "api/ApiAuth/Me",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 401
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 404
+      }
+    ]
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.ApiAuthController",
+    "Method": "RefreshToken",
+    "RelativePath": "api/ApiAuth/Refresh",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 401
+      }
+    ]
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.ApiAuthController",
+    "Method": "Register",
+    "RelativePath": "api/ApiAuth/Register",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "STOREBOOKS.Controllers.RegisterRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 409
+      }
+    ]
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.ApiBooksController",
+    "Method": "BestSellers",
+    "RelativePath": "api/ApiBooks/BestSellers",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "limit",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.ApiBooksController",
+    "Method": "List",
+    "RelativePath": "api/ApiBooks/List",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "categoryId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.ApiBooksController",
+    "Method": "Promotions",
+    "RelativePath": "api/ApiBooks/Promotions",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "limit",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.ApiBooksController",
+    "Method": "Related",
+    "RelativePath": "api/ApiBooks/Related",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bookId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "limit",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.ApiBooksController",
+    "Method": "Search",
+    "RelativePath": "api/ApiBooks/Search",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "keyword",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.ApiOrderController",
+    "Method": "Cancel",
+    "RelativePath": "api/ApiOrder/Cancel",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 404
+      }
+    ]
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.ApiOrderController",
+    "Method": "Details",
+    "RelativePath": "api/ApiOrder/Details/{orderId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 404
+      }
+    ]
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.ApiOrderController",
+    "Method": "List",
+    "RelativePath": "api/ApiOrder/List",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "status",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "fromDate",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "toDate",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 401
+      }
+    ]
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.ApiOrderController",
+    "Method": "UpdateStatus",
+    "RelativePath": "api/ApiOrder/UpdateStatus",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "status",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 404
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 403
+      }
+    ]
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.ApiOrderController",
+    "Method": "UserOrders",
+    "RelativePath": "api/ApiOrder/UserOrders",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.ApiPaymentController",
+    "Method": "History",
+    "RelativePath": "api/ApiPayment/History",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "userId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.ApiPaymentController",
+    "Method": "Status",
+    "RelativePath": "api/ApiPayment/Status/{paymentId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "paymentId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.ApiReviewsController",
+    "Method": "ByBook",
+    "RelativePath": "api/ApiReviews/ByBook/{bookId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bookId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.ApiReviewsController",
+    "Method": "Create",
+    "RelativePath": "api/ApiReviews/Create",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "STOREBOOKS.Controllers.ApiReviewsController\u002BCreateReviewDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.ApiReviewsController",
+    "Method": "Delete",
+    "RelativePath": "api/ApiReviews/Delete/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.ApiStatsController",
+    "Method": "Dashboard",
+    "RelativePath": "api/ApiStats/Dashboard",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.ApiStatsController",
+    "Method": "FixOrderIntegrity",
+    "RelativePath": "api/ApiStats/FixOrderIntegrity",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.ApiStatsController",
+    "Method": "RevenueByDate",
+    "RelativePath": "api/ApiStats/RevenueByDate",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "fromDate",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "toDate",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.ApiStatsController",
+    "Method": "TopSellingBooks",
+    "RelativePath": "api/ApiStats/TopSellingBooks",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "limit",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.ApiStatsController",
+    "Method": "ValidateOrderIntegrity",
+    "RelativePath": "api/ApiStats/ValidateOrderIntegrity",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.ApiUsersController",
+    "Method": "List",
+    "RelativePath": "api/ApiUsers/List",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "keyword",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "role",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.ApiUsersController",
+    "Method": "Profile",
+    "RelativePath": "api/ApiUsers/Profile/{userId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.ApiUsersController",
+    "Method": "UpdateProfile",
+    "RelativePath": "api/ApiUsers/UpdateProfile",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "dto",
+        "Type": "STOREBOOKS.Controllers.ApiUsersController\u002BUpdateUserProfileDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.OrderController",
+    "Method": "ChiTietDonMua",
+    "RelativePath": "Order/ChiTietDonMua/{id}",
+    "HttpMethod": "",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.OrderController",
+    "Method": "HuyDonHang",
+    "RelativePath": "Order/HuyDonHang",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "STOREBOOKS.Controllers.OrderController",
+    "Method": "LichSu",
+    "RelativePath": "Order/LichSu",
+    "HttpMethod": "",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  }
+]

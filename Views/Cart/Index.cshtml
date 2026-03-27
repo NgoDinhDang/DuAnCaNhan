@@ -1,0 +1,373 @@
+﻿@model List<STOREBOOKS.Models.CartItem>
+@{
+    ViewData["Title"] = "Giỏ hàng - STOREBOOKS";
+}
+
+<!-- Hero Section -->
+<section class="cart-hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="cart-hero-content">
+                    <div class="cart-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <h1 class="cart-title">Giỏ hàng của bạn</h1>
+                    <p class="cart-subtitle">@(Model?.Count ?? 0) sản phẩm trong giỏ hàng</p>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="cart-steps">
+                    <div class="step active">
+                        <div class="step-number">1</div>
+                        <div class="step-label">Giỏ hàng</div>
+                    </div>
+                    <div class="step-connector"></div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-label">Thanh toán</div>
+                    </div>
+                    <div class="step-connector"></div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-label">Hoàn thành</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container cart-container">
+    @if (Model == null || Model.Count == 0)
+    {
+        <!-- Empty Cart State -->
+        <div class="empty-cart">
+            <div class="empty-cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+            </div>
+            <h3 class="empty-cart-title">Giỏ hàng trống</h3>
+            <p class="empty-cart-text">Bạn chưa có sản phẩm nào trong giỏ hàng. Hãy khám phá các cuốn sách thú vị của chúng tôi!</p>
+            <div class="empty-cart-actions">
+                <a href="@Url.Action("Index", "Home")" class="btn btn-primary-modern">
+                    <i class="fas fa-home me-2"></i> Về trang chủ
+                </a>
+                <a href="@Url.Action("Index", "Books")" class="btn btn-outline-primary-modern">
+                    <i class="fas fa-book me-2"></i> Khám phá sách
+                </a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <!-- Cart Items -->
+            <div class="col-lg-8">
+                <div class="cart-items-section">
+                    <div class="cart-header">
+                        <h4 class="cart-section-title">
+                            <i class="fas fa-list me-2"></i>
+                            Sản phẩm (@Model.Count)
+                        </h4>
+                    </div>
+
+                    <div class="cart-items" id="cart-items">
+                        @foreach (var item in Model)
+                        {
+                            <div class="cart-item-card" data-id="@item.MaSach">
+                                <div class="cart-item-image">
+                                    <img src="~/images/@item.HinhAnh" alt="@item.TenSach" class="img-fluid">
+                                </div>
+
+                                <div class="cart-item-details">
+                                    <h5 class="cart-item-title">@item.TenSach</h5>
+                                    <p class="cart-item-author">@item.TacGia</p>
+                                    <div class="cart-item-price">
+                                        <span class="current-price">@item.Gia.ToString("N0")đ</span>
+                                    </div>
+                                </div>
+
+                                <div class="cart-item-quantity">
+                                    <div class="quantity-controls">
+                                        <button class="quantity-btn decrease" data-type="decrease">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                        <input type="number" class="quantity-input" value="@item.SoLuong" min="1" max="99">
+                                        <button class="quantity-btn increase" data-type="increase">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="cart-item-total">
+                                    <span class="item-total">@((item.Gia * item.SoLuong).ToString("N0"))đ</span>
+                                </div>
+
+                                <div class="cart-item-actions">
+                                    <button class="btn-remove" onclick="removeItem('@item.MaSach')" title="Xóa sản phẩm">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="cart-actions-mobile">
+                        <button class="btn btn-outline-danger btn-sm w-100" onclick="clearCart()">
+                            <i class="fas fa-trash-alt me-2"></i> Xóa tất cả
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="col-lg-4">
+                <div class="order-summary-sticky">
+                    <div class="order-summary-card">
+                        <div class="order-summary-header">
+                            <h4 class="summary-title">
+                                <i class="fas fa-receipt me-2"></i>
+                                Tóm tắt đơn hàng
+                            </h4>
+                        </div>
+
+                        <div class="order-summary-body">
+                            <div class="summary-row">
+                                <span>Tạm tính (@Model.Count sản phẩm)</span>
+                                <span class="subtotal">@Model.Sum(p => p.Gia * p.SoLuong).ToString("N0")đ</span>
+                            </div>
+
+                            <div class="summary-row">
+                                <span>Phí vận chuyển</span>
+                                <span class="shipping-cost">Miễn phí</span>
+                            </div>
+
+                            <hr class="summary-divider">
+
+                            <div class="summary-row total-row">
+                                <span class="total-label">Tổng cộng</span>
+                                <span class="total-amount" id="tong-tien">@Model.Sum(p => p.Gia * p.SoLuong).ToString("N0")đ</span>
+                            </div>
+                        </div>
+
+                        <div class="order-summary-footer">
+                            <div class="checkout-actions">
+                                <a asp-controller="Cart" asp-action="Checkout" class="btn btn-primary-modern btn-lg w-100">
+                                    <i class="fas fa-credit-card me-2"></i>
+                                    Tiến hành thanh toán
+                                </a>
+
+                                <a href="@Url.Action("Index", "Books")" class="btn btn-outline-primary-modern btn-lg w-100 mt-3">
+                                    <i class="fas fa-arrow-left me-2"></i>
+                                    Tiếp tục mua sắm
+                                </a>
+                            </div>
+
+                            <div class="payment-methods mt-4">
+                                <p class="payment-methods-title">Phương thức thanh toán</p>
+                                <div class="payment-icons">
+                                    <div class="payment-icon">
+                                        <i class="fas fa-credit-card"></i>
+                                        <span>Thẻ tín dụng</span>
+                                    </div>
+                                    <div class="payment-icon">
+                                        <i class="fas fa-mobile-alt"></i>
+                                        <span>Mobile</span>
+                                    </div>
+                                    <div class="payment-icon">
+                                        <i class="fas fa-money-bill-wave"></i>
+                                        <span>Tiền mặt</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Badge -->
+                    <div class="security-badge">
+                        <div class="security-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="security-text">
+                            <h6>Thanh toán an toàn</h6>
+                            <p>Mã hóa SSL 256-bit</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related Products Section -->
+        <section class="related-products-section">
+            <h4 class="section-title">
+                <i class="fas fa-heart me-2"></i>
+                Có thể bạn quan tâm
+            </h4>
+            <div class="related-products">
+                <!-- Placeholder for related products -->
+                <div class="related-product-card">
+                    <img src="~/images/book-placeholder-1.jpg" alt="Sách liên quan">
+                    <h6>Sách mẫu 1</h6>
+                    <p class="price">99,000đ</p>
+                </div>
+                <div class="related-product-card">
+                    <img src="~/images/book-placeholder-2.jpg" alt="Sách liên quan">
+                    <h6>Sách mẫu 2</h6>
+                    <p class="price">149,000đ</p>
+                </div>
+                <div class="related-product-card">
+                    <img src="~/images/book-placeholder-3.jpg" alt="Sách liên quan">
+                    <h6>Sách mẫu 3</h6>
+                    <p class="price">79,000đ</p>
+                </div>
+                <div class="related-product-card">
+                    <img src="~/images/book-placeholder-4.jpg" alt="Sách liên quan">
+                    <h6>Sách mẫu 4</h6>
+                    <p class="price">199,000đ</p>
+                </div>
+            </div>
+        </section>
+    }
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(function () {
+            // Quantity controls
+            $(document).on('click', '.quantity-btn', function() {
+                const card = $(this).closest('.cart-item-card');
+                const input = card.find('.quantity-input');
+                let quantity = parseInt(input.val());
+                const type = $(this).data('type');
+                const maSach = card.data('id');
+
+                if (type === 'increase' && quantity < 99) {
+                    quantity++;
+                } else if (type === 'decrease' && quantity > 1) {
+                    quantity--;
+                }
+
+                input.val(quantity);
+                updateCartItem(maSach, quantity, card);
+            });
+
+            // Quantity input change
+            $(document).on('change', '.quantity-input', function() {
+                const card = $(this).closest('.cart-item-card');
+                const quantity = parseInt($(this).val());
+                const maSach = card.data('id');
+
+                if (quantity >= 1 && quantity <= 99) {
+                    updateCartItem(maSach, quantity, card);
+                } else {
+                    // Reset to valid value
+                    const currentQuantity = parseInt($(this).data('current-quantity')) || 1;
+                    $(this).val(currentQuantity);
+                }
+            });
+
+            // Prevent invalid input
+            $(document).on('input', '.quantity-input', function() {
+                const value = $(this).val();
+                // Only allow numbers
+                $(this).val(value.replace(/[^0-9]/g, ''));
+            });
+
+            function updateCartItem(maSach, quantity, card) {
+                // Show loading state
+                card.addClass('updating');
+                const itemTotal = card.find('.item-total');
+                const originalText = itemTotal.text();
+
+                itemTotal.html('<i class="fas fa-spinner fa-spin"></i>');
+
+                $.ajax({
+                    url: '/Cart/CapNhatSoLuong',
+                    type: 'POST',
+                    data: {
+                        id: maSach,
+                        soLuong: quantity
+                    },
+                    success: function (res) {
+                        // Update item total
+                        card.find('.item-total').text(formatCurrency(res.thanhTien));
+                        card.find('.quantity-input').data('current-quantity', quantity);
+
+                        // Update overall total
+                        $('#tong-tien').text(formatCurrency(res.tongTien));
+
+                        // Update subtotal
+                        $('.subtotal').text(formatCurrency(res.tongTien));
+
+                        // Show success feedback
+                        showUpdateFeedback(card, 'success');
+                    },
+                    error: function() {
+                        // Revert changes on error
+                        card.find('.item-total').text(originalText);
+                        showUpdateFeedback(card, 'error');
+                    },
+                    complete: function() {
+                        card.removeClass('updating');
+                    }
+                });
+            }
+
+            function showUpdateFeedback(card, type) {
+                const feedback = $('<div class="update-feedback ' + type + '"></div>');
+                if (type === 'success') {
+                    feedback.html('<i class="fas fa-check"></i>');
+                } else {
+                    feedback.html('<i class="fas fa-times"></i>');
+                }
+
+                card.append(feedback);
+                setTimeout(() => {
+                    feedback.fadeOut(() => feedback.remove());
+                }, 1500);
+            }
+
+            function formatCurrency(amount) {
+                return amount.toLocaleString() + 'đ';
+            }
+        });
+
+        // Remove item function
+        function removeItem(maSach) {
+            if (confirm('Bạn có chắc muốn xóa sản phẩm này khỏi giỏ hàng?')) {
+                window.location.href = `/Cart/Remove/${maSach}`;
+            }
+        }
+
+        // Clear cart function
+        function clearCart() {
+            if (confirm('Bạn có chắc muốn xóa tất cả sản phẩm trong giỏ hàng?')) {
+                window.location.href = '/Cart/Clear';
+            }
+        }
+
+        // Add to cart animation (for related products)
+        function addToCartFromRelated(maSach) {
+            // This would be implemented to add items from related products section
+            console.log('Add to cart:', maSach);
+        }
+    </script>
+}
+
+<style>
+    .cart-img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: var(--bg-light);
+        transition: background-color var(--transition-speed) ease;
+    }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: var(--bg-light);
+    }
+</style>

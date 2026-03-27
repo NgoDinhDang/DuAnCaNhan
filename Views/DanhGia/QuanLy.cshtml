@@ -1,0 +1,198 @@
+﻿@model List<STOREBOOKS.Models.DanhGia>
+@{
+    ViewData["Title"] = "Quản lý đánh giá";
+}
+
+<div class="container mt-5">
+    <h2 class="book-list-title animate__animated animate__fadeInDown">
+        <i class="fas fa-comments me-2"></i> Quản lý đánh giá
+    </h2>
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success custom-alert animate__animated animate__fadeIn" role="alert">
+            <i class="fas fa-check-circle me-2"></i> @TempData["Message"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger custom-alert animate__animated animate__fadeIn" role="alert">
+            <i class="fas fa-times-circle me-2"></i> @ViewBag.Error
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="card p-5 text-center shadow-lg rounded-15 animate__animated animate__zoomIn">
+            <div class="alert alert-info custom-alert animate__animated animate__fadeIn" role="alert">
+                <h4 class="alert-heading"><i class="fas fa-exclamation-circle me-2"></i> Không có đánh giá nào!</h4>
+                <p class="mb-0">Hiện tại không có đánh giá nào cần quản lý.</p>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="card p-5 shadow-lg rounded-15 animate__animated animate__fadeInUp">
+            <div class="table-responsive">
+                <table class="table modern-table align-middle">
+                    <thead>
+                        <tr>
+                            <th class="text-start">Người dùng</th>
+                            <th class="text-start">Sách</th>
+                            <th class="text-center">Số sao</th>
+                            <th class="text-start">Bình luận</th>
+                            <th class="text-start">Ngày đánh giá</th>
+                            <th class="text-start">Trạng thái</th>
+                            <th class="text-center">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var dg in Model)
+                        {
+                            <tr class="animate__animated animate__fadeIn">
+                                <td data-label="Người dùng:">@dg.NguoiDung?.TaiKhoan?.TenDangNhap</td>
+                                <td data-label="Sách:">@dg.Sach?.TenSach</td>
+                                <td data-label="Số sao:" class="text-center">
+                                    <span class="badge bg-warning text-dark px-3 py-2 rounded-pill">@dg.SoSao <i class="fas fa-star ms-1"></i></span>
+                                </td>
+                                <td data-label="Bình luận:">@dg.BinhLuan</td>
+                                <td data-label="Ngày đánh giá:">@dg.NgayDanhGia.ToString("dd/MM/yyyy")</td>
+                                <td data-label="Trạng thái:">
+                                    @if (dg.DaDuyet)
+                                    {
+                                        <span class="status-badge approved">
+                                            <i class="fas fa-check-circle me-1"></i> Đã duyệt
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="status-badge pending">
+                                            <i class="fas fa-hourglass-half me-1"></i> Chờ duyệt
+                                        </span>
+                                    }
+                                </td>
+                                <td data-label="Hành động:" class="text-center">
+                                    <div class="d-flex justify-content-center flex-wrap gap-2">
+                                        @if (!dg.DaDuyet)
+                                        {
+                                            <button class="btn btn-sm btn-approve rounded-pill" onclick="duyetDanhGia(@dg.Id)">
+                                                <i class="fas fa-check me-1"></i> Duyệt
+                                            </button>
+                                        }
+                                        <button class="btn btn-sm btn-delete rounded-pill" onclick="xoaDanhGia(@dg.Id)">
+                                            <i class="fas fa-trash-alt me-1"></i> Xóa
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+@section Scripts {
+    <script>
+        function duyetDanhGia(id) {
+            Swal.fire({
+                title: "Xác nhận duyệt?",
+                text: "Bạn có chắc muốn duyệt đánh giá này?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: '#2ecc71',
+                cancelButtonColor: '#c0392b',
+                confirmButtonText: "Duyệt",
+                cancelButtonText: "Hủy",
+                customClass: {
+                    popup: 'swal2-dark-bg',
+                    title: 'swal2-title-color',
+                    htmlContainer: 'swal2-html-color',
+                    confirmButton: 'swal2-confirm-button',
+                    cancelButton: 'swal2-cancel-button'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.post('@Url.Action("Duyet", "DanhGia")', { id: id }, function (res) {
+                        Swal.fire({
+                            title: res.message,
+                            icon: res.success ? "success" : "error",
+                            customClass: {
+                                popup: 'swal2-dark-bg',
+                                title: 'swal2-title-color',
+                                htmlContainer: 'swal2-html-color',
+                                confirmButton: 'swal2-confirm-button'
+                            }
+                        }).then(() => {
+                            if (res.success) location.reload();
+                        });
+                    }).fail(function(jqXHR, textStatus, errorThrown) {
+                        Swal.fire({
+                            title: "Lỗi",
+                            text: "Có lỗi xảy ra khi xử lý yêu cầu: " + errorThrown,
+                            icon: "error",
+                            customClass: {
+                                popup: 'swal2-dark-bg',
+                                title: 'swal2-title-color',
+                                htmlContainer: 'swal2-html-color'
+                            }
+                        });
+                    });
+                }
+            });
+        }
+
+        function xoaDanhGia(id) {
+            Swal.fire({
+                title: "Xác nhận xóa?",
+                text: "Đánh giá này sẽ bị xóa vĩnh viễn và không thể khôi phục!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: '#e74c3c',
+                cancelButtonColor: '#7f8c8d',
+                confirmButtonText: "Xóa",
+                cancelButtonText: "Hủy",
+                customClass: {
+                    popup: 'swal2-dark-bg',
+                    title: 'swal2-title-color',
+                    htmlContainer: 'swal2-html-color',
+                    confirmButton: 'swal2-confirm-button',
+                    cancelButton: 'swal2-cancel-button'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.post('@Url.Action("Xoa", "DanhGia")', { id: id }, function (res) {
+                        Swal.fire({
+                            title: res.message,
+                            icon: res.success ? "success" : "error",
+                            customClass: {
+                                popup: 'swal2-dark-bg',
+                                title: 'swal2-title-color',
+                                htmlContainer: 'swal2-html-color',
+                                confirmButton: 'swal2-confirm-button'
+                            }
+                        }).then(() => {
+                            if (res.success) location.reload();
+                        });
+                    }).fail(function(jqXHR, textStatus, errorThrown) {
+                        Swal.fire({
+                            title: "Lỗi",
+                            text: "Có lỗi xảy ra khi xử lý yêu cầu: " + errorThrown,
+                            icon: "error",
+                            customClass: {
+                                popup: 'swal2-dark-bg',
+                                title: 'swal2-title-color',
+                                htmlContainer: 'swal2-html-color'
+                            }
+                        });
+                    });
+                }
+            });
+        }
+    </script>
+}

@@ -1,0 +1,13 @@
+﻿@model List<STOREBOOKS.Models.DanhMuc>
+
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Danh mục sách
+    </a>
+    <ul class="dropdown-menu">
+        @foreach (var item in Model)
+        {
+            <li><a class="dropdown-item" href="/Books?danhMucId=@item.MaDanhMuc">@item.TenDanhMuc</a></li>
+        }
+    </ul>
+</li>

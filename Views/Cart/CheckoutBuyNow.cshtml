@@ -1,0 +1,254 @@
+﻿@model List<STOREBOOKS.Models.CartItem>
+@{
+    ViewData["Title"] = "Thanh toán - Mua ngay";
+}
+
+<div class="container mt-5">
+    <h2 class="book-list-title"><i class="fas fa-cash-register me-2"></i> Thanh Toán - Mua Ngay</h2>
+    <div class="card p-4">
+        <a href="javascript:history.back()" class="btn btn-secondary-outline mb-4">
+            <i class="fas fa-arrow-left"></i> Quay lại
+        </a>
+
+        @if (Model != null && Model.Count > 0)
+        {
+            <form asp-action="CheckoutBuyNow" asp-controller="Cart" method="post" class="needs-validation" novalidate id="checkoutBuyNowForm">
+                @Html.AntiForgeryToken()
+                <div class="row">
+                    <div class="col-md-6 mb-4 mb-md-0">
+                        <h4 class="mb-3 text-gradient-start">Thông tin khách hàng</h4>
+                        <div class="form-group mb-3 auth-input-group">
+                            <label for="tenKhachHang" class="form-label info-label"><i class="fas fa-user me-1"></i> Tên khách hàng</label>
+                            <input name="tenKhachHang" id="tenKhachHang" class="form-control rounded-pill" required />
+                            <div class="invalid-feedback validation-message">
+                                Vui lòng nhập tên khách hàng.
+                            </div>
+                        </div>
+                        <div class="form-group mb-3 auth-input-group">
+                            <label for="email" class="form-label info-label"><i class="fas fa-envelope me-1"></i> Email</label>
+                            <input type="email" name="email" id="email" class="form-control rounded-pill" required />
+                            <div class="invalid-feedback validation-message">
+                                Vui lòng nhập email hợp lệ.
+                            </div>
+                        </div>
+                        <div class="form-group mb-3 auth-input-group">
+                            <label for="soDienThoai" class="form-label info-label"><i class="fas fa-phone me-1"></i> Số điện thoại</label>
+                            <input type="tel" name="soDienThoai" id="soDienThoai" class="form-control rounded-pill" required />
+                            <div class="invalid-feedback validation-message">
+                                Vui lòng nhập số điện thoại.
+                            </div>
+                        </div>
+                        <div class="form-group mb-3 auth-input-group">
+                            <label for="diaChiGiaoHang" class="form-label info-label"><i class="fas fa-map-marker-alt me-1"></i> Địa chỉ giao hàng</label>
+                            <input name="diaChiGiaoHang" id="diaChiGiaoHang" class="form-control rounded-pill" required />
+                            <div class="invalid-feedback validation-message">
+                                Vui lòng nhập địa chỉ giao hàng.
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label class="form-label info-label"><i class="fas fa-credit-card me-1"></i> Phương thức thanh toán</label>
+                            <div class="payment-methods">
+                                <div class="form-check payment-option p-3 border rounded mb-2">
+                                    <input class="form-check-input" type="radio" name="paymentMethod" id="codPayment" value="cod" checked>
+                                    <label class="form-check-label w-100" for="codPayment">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-money-bill-wave fa-2x text-success me-3"></i>
+                                            <div>
+                                                <strong>Thanh toán khi nhận hàng (COD)</strong>
+                                                <p class="text-muted mb-0 small">Thanh toán bằng tiền mặt khi nhận hàng</p>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+                                <div class="form-check payment-option p-3 border rounded">
+                                    <input class="form-check-input" type="radio" name="paymentMethod" id="momoPayment" value="momo">
+                                    <label class="form-check-label w-100" for="momoPayment">
+                                        <div class="d-flex align-items-center">
+                                            <img src="https://developers.momo.vn/v3/vi/assets/images/square-8c08a00f550e40a2efafea4a005b1232.png" 
+                                                 alt="MoMo" style="width: 50px; height: 50px;" class="me-3">
+                                            <div>
+                                                <strong>Thanh toán qua MoMo</strong>
+                                                <p class="text-muted mb-0 small">Thanh toán nhanh chóng và an toàn qua ví MoMo</p>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h4 class="mb-3 text-gradient-start">Tóm tắt đơn hàng</h4>
+                        <ul class="list-group mb-3 shadow-sm rounded-12">
+                            @foreach (var item in Model)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                                    <div>
+                                        <h6 class="my-0 text-dark fw-bold">@item.TenSach</h6>
+                                        <small class="text-muted">Số lượng: @item.SoLuong</small>
+                                    </div>
+                                    <span class="text-accent-color fw-bold">@((item.Gia * item.SoLuong).ToString("N0")) VNĐ</span>
+                                </li>
+                            }
+                            <li class="list-group-item d-flex justify-content-between align-items-center fw-bold bg-light py-3 rounded-bottom-12">
+                                <span class="text-primary-color">Tổng cộng</span>
+                                <span class="text-accent-color display-6">@Model.Sum(p => p.Gia * p.SoLuong).ToString("N0")) VNĐ</span>
+                            </li>
+                        </ul>
+                        <button type="submit" class="btn btn-primary-gradient w-100 py-3 mt-3" id="submitOrderBtn">
+                            <i class="fas fa-check-circle me-2"></i> <span id="btnText">Xác nhận đặt hàng</span>
+                        </button>
+                        <p class="text-center text-muted mt-2 small">
+                            <i class="fas fa-shield-alt"></i> Thông tin của bạn được bảo mật
+                        </p>
+                    </div>
+                </div>
+            </form>
+        }
+        else
+        {
+            <div class="alert alert-info text-center custom-alert">
+                <i class="fas fa-info-circle me-2"></i> Không có sản phẩm để thanh toán.
+            </div>
+            <div class="d-flex justify-content-center mt-4">
+                <a href="@Url.Action("Index", "Books")" class="btn btn-accent-gradient rounded-pill px-4 py-2">
+                    <i class="fas fa-book me-2"></i> Tiếp tục mua sắm
+                </a>
+            </div>
+        }
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger mt-3 custom-alert">
+                <ul class="list-unstyled mb-0">
+                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        <li><i class="fas fa-exclamation-triangle me-2"></i> @error.ErrorMessage</li>
+                    }
+                </ul>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .payment-option {
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .payment-option:hover {
+        background-color: #f8f9fa;
+        border-color: #007bff !important;
+    }
+
+    .payment-option input[type="radio"]:checked ~ label {
+        color: #007bff;
+    }
+
+    .payment-option input[type="radio"]:checked {
+        border-color: #007bff;
+    }
+</style>
+
+<script>
+    // Update button text based on payment method
+    document.querySelectorAll('input[name="paymentMethod"]').forEach(function(radio) {
+        radio.addEventListener('change', function() {
+            const btnText = document.getElementById('btnText');
+            if (this.value === 'momo') {
+                btnText.innerHTML = '<i class="fas fa-wallet me-2"></i> Thanh toán qua MoMo';
+            } else {
+                btnText.textContent = 'Xác nhận đặt hàng';
+            }
+        });
+    });
+
+    // Form validation and submission
+    (function () {
+        'use strict'
+
+        var forms = document.querySelectorAll('.needs-validation')
+
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    event.preventDefault()
+                    event.stopPropagation()
+
+                    if (!form.checkValidity()) {
+                        form.classList.add('was-validated')
+                        return;
+                    }
+
+                    form.classList.add('was-validated')
+
+                    // Get selected payment method
+                    const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+
+                    if (paymentMethod === 'momo') {
+                        handleMoMoPayment(form);
+                    } else {
+                        // Submit form normally for COD
+                        form.submit();
+                    }
+                }, false)
+            })
+    })()
+
+    function handleMoMoPayment(form) {
+        const submitBtn = document.getElementById('submitOrderBtn');
+        const originalBtnText = submitBtn.innerHTML;
+        
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Đang tạo đơn hàng...';
+
+        // Create FormData from form
+        const formData = new FormData(form);
+        
+        // First, create the order via AJAX
+        fetch('/Cart/CheckoutBuyNowWithMoMo', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Order created successfully, now create MoMo payment
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Đang kết nối với MoMo...';
+                
+                return fetch('/Payment/CreateMoMoPayment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        orderId: data.orderId,
+                        __RequestVerificationToken: formData.get('__RequestVerificationToken')
+                    })
+                })
+                .then(response => response.json())
+                .then(momoData => {
+                    if (momoData.success && momoData.payUrl) {
+                        // Redirect to MoMo payment page
+                        window.location.href = momoData.payUrl;
+                    } else {
+                        alert('Không thể tạo thanh toán MoMo: ' + momoData.message);
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalBtnText;
+                    }
+                });
+            } else {
+                alert(data.message || 'Có lỗi xảy ra khi tạo đơn hàng.');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Có lỗi xảy ra. Vui lòng thử lại.');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnText;
+        });
+    }
+</script>

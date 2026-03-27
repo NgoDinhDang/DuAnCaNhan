@@ -1,0 +1,116 @@
+﻿@model List<STOREBOOKS.Models.DanhGia>
+
+@{
+    ViewData["Title"] = "Quản lý đánh giá";
+}
+
+<div class="admin-page-header">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="admin-page-title">
+                <i class="fas fa-star me-2"></i>
+                Quản lý đánh giá
+            </h2>
+            <p class="admin-page-subtitle">Duyệt và quản lý đánh giá từ khách hàng</p>
+        </div>
+    </div>
+</div>
+
+<partial name="_AdminNav" />
+
+<div class="container mt-4">
+
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Sách</th>
+                <th>Người đánh giá</th>
+                <th>Số sao</th>
+                <th>Bình luận</th>
+                <th>Ngày</th>
+                <th>Trạng thái</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.NguoiDung?.TaiKhoan?.TenDangNhap</td>
+                    <td>@item.Sach?.TenSach</td>
+                    <td>@item.SoSao ⭐</td>
+                    <td>@item.BinhLuan</td>
+                    <td>@item.NgayDanhGia.ToString("dd/MM/yyyy")</td>
+                    <td>
+                        @if (item.DaDuyet)
+                        {
+                            <span class="badge bg-success">Đã duyệt</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark">Chưa duyệt</span>
+                        }
+                    </td>
+                    <td>
+                        @if (!item.DaDuyet)
+                        {
+                            <button class="btn btn-sm btn-success" onclick="duyetDanhGia(@item.Id)">
+                                <i class="fas fa-check"></i> Duyệt
+                            </button>
+                        }
+                        <button class="btn btn-sm btn-danger" onclick="xoaDanhGia(@item.Id)">
+                            <i class="fas fa-trash"></i> Xóa
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function duyetDanhGia(id) {
+            Swal.fire({
+                title: 'Xác nhận?',
+                text: "Bạn có muốn duyệt đánh giá này?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Duyệt',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch('/AdminDanhGia/Duyet/' + id, {
+                        method: 'POST'
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        Swal.fire(data.message, '', 'success').then(() => location.reload());
+                    });
+                }
+            });
+        }
+
+        function xoaDanhGia(id) {
+            Swal.fire({
+                title: 'Bạn chắc chứ?',
+                text: "Hành động này không thể hoàn tác!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Xóa',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch('/AdminDanhGia/Xoa/' + id, {
+                        method: 'POST'
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        Swal.fire(data.message, '', 'success').then(() => location.reload());
+                    });
+                }
+            });
+        }
+    </script>
+}
